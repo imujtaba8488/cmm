@@ -47,7 +47,7 @@ class _AddTransactionSheetState extends State<_AddTransactionSheet> {
     optionButtonWidth = MediaQuery.of(context).size.width / 3.4;
 
     // 2 times the amountFieldWidth.
-    _descriptionFieldWidth = _amountFieldWidth * 1.96;
+    _descriptionFieldWidth = _amountFieldWidth * 1.97;
 
     return Container(
       height: _showError
@@ -320,9 +320,13 @@ class _CustomizedTextFormField extends StatelessWidget {
       bottom: _bottom,
       left: _left,
       child: Container(
-        height: 40,
-        padding: EdgeInsets.symmetric(horizontal: 2.0),
-        margin: EdgeInsets.all(2.0),
+        height: 45,
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
+        margin: EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey[400]),
+          borderRadius: BorderRadius.circular(5),
+        ),
         child: TextField(
           focusNode: _focusNode,
           autofocus: _autoFocus,
@@ -331,17 +335,11 @@ class _CustomizedTextFormField extends StatelessWidget {
           controller: _textEditingController,
           keyboardType: _keyboardType,
           decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey,
-                width: 0.2,
-              ),
-              borderRadius: BorderRadius.all(
-                Radius.circular(5.0),
-              ),
+            border: InputBorder.none,
+            hintText: _label,
+            labelStyle: TextStyle(
+              fontSize: 16,
             ),
-            labelText: _label,
-            labelStyle: TextStyle(fontSize: 16, height: 0.9),
           ),
         ),
       ),

@@ -69,7 +69,55 @@ class Account {
     }
   }
 
-  List<Transaction> get transactionsLatestFirst {
-    return transactions.reversed.toList();
+  List<Transaction> get sortedTransactions {
+    List<Transaction> xTransactions = List.of(transactions);
+
+    xTransactions.sort((t1, t2) {
+      return t1.date.compareTo(t2.date);
+    });
+
+    return xTransactions.reversed.toList();
+  }
+
+  double totalExpensesFor(DateTime date) {
+    double total = 0.0;
+
+    transactionsFor(date).forEach((transaction) {
+      if (transaction.type == TransactionType.expense) {
+        total += transaction.amount;
+      }
+    });
+
+    return total;
+  }
+
+  double totalIncomeFor(DateTime date) {
+    double total = 0.0;
+
+    transactionsFor(date).forEach((transaction) {
+      if (transaction.type == TransactionType.income) {
+        total += transaction.amount;
+      }
+    });
+
+    return total;
+  }
+
+  List<Transaction> transactionsFor(DateTime date) {
+    List<Transaction> xTransactions = [];
+
+    if (date.day <= DateTime.now().day &&
+        date.month <= DateTime.now().month &&
+        date.year <= DateTime.now().year) {
+      transactions.forEach((transaction) {
+        if (transaction.date.day == date.day &&
+            transaction.date.month == date.month &&
+            transaction.date.year == date.year) {
+          xTransactions.add(transaction);
+        }
+      });
+    }
+
+    return xTransactions;
   }
 }

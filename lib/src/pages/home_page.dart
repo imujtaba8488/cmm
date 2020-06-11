@@ -17,7 +17,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    topHeight = MediaQuery.of(context).size.height / 3.0;
+    topHeight = MediaQuery.of(context).size.height / 2.5;
     bottomHeight = MediaQuery.of(context).size.height - (topHeight + 24);
 
     return Scaffold(
@@ -45,7 +45,11 @@ class _HomepageState extends State<Homepage> {
       height: topHeight,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: Colors.purple,
+        color: const Color(0xFF02072F),
+        borderRadius: BorderRadius.only(
+            // bottomLeft: Radius.circular(30),
+            // bottomRight: Radius.circular(30),
+            ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -56,14 +60,22 @@ class _HomepageState extends State<Homepage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('Balance'),
+                  Text(
+                    'Balance',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
                   Consumer<AppProvider>(
                     builder: (context, appProvider, child) {
                       return ZoomIn(
                         duration: 200,
                         child: Text(
-                          '${appProvider.account.balance}',
-                          style: TextStyle(color: Colors.amber, fontSize: 30),
+                          '\$ ${appProvider.account.balance}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                          ),
                         ),
                       );
                     },
@@ -83,11 +95,22 @@ class _HomepageState extends State<Homepage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text('Welcome Back Mujtaba!'),
-          CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 20,
-            backgroundImage: AssetImage('assets/test.jpg'),
+          Icon(Icons.menu),
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child: Text(
+                  'Welcome Back Mujtaba!',
+                  style: TextStyle(fontSize: 10.0),
+                ),
+              ),
+              CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 20,
+                backgroundImage: AssetImage('assets/test.jpg'),
+              ),
+            ],
           ),
         ],
       ),
