@@ -18,14 +18,14 @@ class _TransactionslistState extends State<Transactionslist> {
     return Consumer<AppProvider>(
       builder: (context, appProvider, child) {
         return Container(
-          padding: EdgeInsets.all(5.0),
+          padding: EdgeInsets.all(8.0),
           decoration: BoxDecoration(border: Border.all(width: 0.0)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF02072F),
+                  color: Theme.of(context).backgroundColor,
                 ),
                 child: Column(
                   children: <Widget>[
@@ -73,19 +73,13 @@ class _TransactionslistState extends State<Transactionslist> {
                                   });
                                 }
                               },
+                              onDoubleTap: () {
+                                setState(() {
+                                  dateSelected = DateTime.now();
+                                });
+                              },
                             ),
                           ),
-                          // Padding(
-                          //   padding: const EdgeInsets.all(8.0),
-                          //   child: InkWell(
-                          //     child: Icon(Icons.restore),
-                          //     onTap: () {
-                          //       setState(() {
-                          //         dateSelected = DateTime.now();
-                          //       });
-                          //     },
-                          //   ),
-                          // ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
@@ -109,7 +103,6 @@ class _TransactionslistState extends State<Transactionslist> {
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        // color: Colors.white,
                         border: BorderDirectional(
                           bottom: BorderSide(color: Colors.grey),
                         ),

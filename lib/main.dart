@@ -17,6 +17,7 @@ class CMM extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
+            appBarTheme: AppBarTheme(color: const Color(0xFF02072F)),
             textTheme: TextTheme(
               bodyText1: TextStyle(color: Colors.white),
               bodyText2: TextStyle(color: Colors.white),
@@ -24,6 +25,7 @@ class CMM extends StatelessWidget {
             iconTheme: IconThemeData(
               color: Colors.white,
             ),
+            backgroundColor: const Color(0xFF02072F),
           ),
           home: Scaffold(
             body: Homepage(),
