@@ -18,13 +18,16 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    topHeight = MediaQuery.of(context).size.height / 3.5;
+    topHeight = MediaQuery.of(context).size.height / 6.0;
     bottomHeight = MediaQuery.of(context).size.height - (topHeight + 24);
 
     return Scaffold(
       drawer: AppDrawer(),
       appBar: AppBar(
         actions: <Widget>[
+          Center(
+            child: Text('Welcome Back Mujtaba!'),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: CircleAvatar(
@@ -57,41 +60,31 @@ class _HomepageState extends State<Homepage> {
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
-        borderRadius: BorderRadius.only(
-            // bottomLeft: Radius.circular(30),
-            // bottomRight: Radius.circular(30),
-            ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Balance',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  Consumer<AppProvider>(
-                    builder: (context, appProvider, child) {
-                      return ZoomIn(
-                        duration: 200,
-                        child: Text(
-                          '\$ ${appProvider.account.balance}',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                          ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Balance',
+                ),
+                Consumer<AppProvider>(
+                  builder: (context, appProvider, child) {
+                    return ZoomIn(
+                      duration: 200,
+                      child: Text(
+                        '\$ ${appProvider.account.balance}',
+                        style: TextStyle(
+                          fontSize: 30,
                         ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           )
         ],

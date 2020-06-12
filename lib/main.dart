@@ -17,15 +17,24 @@ class CMM extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
+            brightness: Brightness.dark,
             appBarTheme: AppBarTheme(color: const Color(0xFF02072F)),
             textTheme: TextTheme(
-              bodyText1: TextStyle(color: Colors.white),
-              bodyText2: TextStyle(color: Colors.white),
+              bodyText1: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Cairo',
+              ),
+              bodyText2: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Cairo',
+              ),
             ),
             iconTheme: IconThemeData(
               color: Colors.white,
             ),
             backgroundColor: const Color(0xFF02072F),
+            primaryIconTheme: IconThemeData(color: Colors.white),
+            unselectedWidgetColor: Colors.white,
           ),
           home: Scaffold(
             body: Homepage(),

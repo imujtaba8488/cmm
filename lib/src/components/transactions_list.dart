@@ -18,14 +18,20 @@ class _TransactionslistState extends State<Transactionslist> {
     return Consumer<AppProvider>(
       builder: (context, appProvider, child) {
         return Container(
-          padding: EdgeInsets.all(8.0),
-          decoration: BoxDecoration(border: Border.all(width: 0.0)),
+          padding: EdgeInsets.all(1.0),
+          decoration: BoxDecoration(
+            border: Border.all(width: 0.0),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).backgroundColor,
+                  borderRadius: BorderRadius.only(
+                      // topLeft: Radius.circular(15.0),
+                      // topRight: Radius.circular(15.0),
+                      ),
                 ),
                 child: Column(
                   children: <Widget>[
@@ -41,7 +47,17 @@ class _TransactionslistState extends State<Transactionslist> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
-                              child: Icon(Icons.arrow_left),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.arrow_left),
+                                  Text(
+                                    'Previous',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ],
+                              ),
                               onTap: () {
                                 setState(() {
                                   dateSelected = dateSelected.subtract(
@@ -54,12 +70,27 @@ class _TransactionslistState extends State<Transactionslist> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                                '${DateFormat('dd-MM-yyyy').format(dateSelected)}'),
+                              '${DateFormat('dd-MM-yyyy').format(dateSelected)}',
+                              style: TextStyle(
+                                // fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
-                              child: Icon(Icons.arrow_right),
+                              child: Row(
+                                children: <Widget>[
+                                  Text(
+                                    'Next',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  Icon(Icons.arrow_right)
+                                ],
+                              ),
                               onTap: () {
                                 if (dateSelected.day <=
                                         DateTime.now().day - 1 &&
@@ -163,11 +194,12 @@ class _TransactionslistState extends State<Transactionslist> {
                           TransactionType.income
                       ? Container(
                           decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(5.0),
-                                bottomLeft: Radius.circular(5.0),
-                              )),
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(4.0),
+                              bottomLeft: Radius.circular(4.0),
+                            ),
+                          ),
                           padding: EdgeInsets.all(10),
                           child: Column(children: <Widget>[
                             Text(
@@ -176,15 +208,18 @@ class _TransactionslistState extends State<Transactionslist> {
                                 fontSize: 10.0,
                               ),
                             ),
-                            Icon(Icons.arrow_downward)
+                            Icon(
+                              Icons.arrow_upward,
+                              size: 16,
+                            )
                           ]),
                         )
                       : Container(
                           decoration: BoxDecoration(
                             color: Colors.red,
                             borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(5.0),
-                              bottomLeft: Radius.circular(5.0),
+                              topLeft: Radius.circular(4.0),
+                              bottomLeft: Radius.circular(4.0),
                             ),
                           ),
                           padding: EdgeInsets.all(8),
@@ -195,7 +230,10 @@ class _TransactionslistState extends State<Transactionslist> {
                                 fontSize: 10.0,
                               ),
                             ),
-                            Icon(Icons.arrow_upward)
+                            Icon(
+                              Icons.arrow_downward,
+                              size: 16,
+                            ),
                           ]),
                         ),
                   title: Padding(

@@ -55,21 +55,7 @@ class _AddTransactionSheetState extends State<_AddTransactionSheet> {
           : MediaQuery.of(context).size.height / 7,
       margin: EdgeInsets.all(2.0),
       decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey,
-            blurRadius: 2,
-            offset: Offset(-1, -0.5),
-          ),
-          BoxShadow(
-            color: Colors.grey[600],
-            blurRadius: 2,
-            offset: Offset(1, 1),
-          )
-        ],
-        // border: Border.all(width: 0.5),
-        borderRadius: BorderRadius.circular(5),
+        color: Theme.of(context).backgroundColor,
       ),
       child: Stack(
         children: <Widget>[
@@ -124,7 +110,7 @@ class _AddTransactionSheetState extends State<_AddTransactionSheet> {
       bottom: MediaQuery.of(context).viewInsets.bottomLeft.dx + 60,
       child: Container(
         height: 40,
-        width: optionButtonWidth * 1.8,
+        width: optionButtonWidth * 1.66,
         padding: EdgeInsets.symmetric(horizontal: 5.0),
         margin: EdgeInsets.only(left: 5.0),
         decoration: BoxDecoration(
@@ -162,6 +148,7 @@ class _AddTransactionSheetState extends State<_AddTransactionSheet> {
         children: <Widget>[
           Text(label),
           Radio(
+            visualDensity: VisualDensity.compact,
             onChanged: (value) {
               setState(() {
                 selectedValue = value;
@@ -178,8 +165,8 @@ class _AddTransactionSheetState extends State<_AddTransactionSheet> {
   Positioned dateTimeSelection() {
     return Positioned(
       bottom: MediaQuery.of(context).viewInsets.bottomLeft.dx + 60,
-      width: MediaQuery.of(context).size.width - (optionButtonWidth * 1.88),
-      left: optionButtonWidth * 1.8,
+      width: MediaQuery.of(context).size.width - (optionButtonWidth * 1.74),
+      left: optionButtonWidth * 1.65,
       child: Container(
         height: 40.0,
         padding: EdgeInsets.symmetric(horizontal: 10.0),
@@ -205,6 +192,7 @@ class _AddTransactionSheetState extends State<_AddTransactionSheet> {
             }
           }),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
@@ -337,9 +325,12 @@ class _CustomizedTextFormField extends StatelessWidget {
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: _label,
-            labelStyle: TextStyle(
-              fontSize: 16,
+            hintStyle: TextStyle(
+              color: Theme.of(context).textTheme.bodyText1.color,
             ),
+          ),
+          style: TextStyle(
+            color: Theme.of(context).textTheme.bodyText1.color,
           ),
         ),
       ),
