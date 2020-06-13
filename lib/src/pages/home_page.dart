@@ -112,7 +112,10 @@ class _HomepageState extends State<Homepage> {
                           padding: EdgeInsets.all(5.0),
                           decoration: BoxDecoration(
                             border: Border(
-                              left: BorderSide(width: 0.2, color: Colors.white),
+                              left: BorderSide(
+                                width: 0.2,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                           child: Row(
@@ -125,13 +128,13 @@ class _HomepageState extends State<Homepage> {
                                     Text(
                                       'Total Expenses',
                                       style: TextStyle(
-                                        fontSize: 8,
+                                        fontSize: 10,
                                       ),
                                     ),
                                     Text(
                                       '${appProvider.account.totalExpense}',
                                       style: TextStyle(
-                                        fontSize: 10,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -145,13 +148,13 @@ class _HomepageState extends State<Homepage> {
                                     Text(
                                       'Total Income',
                                       style: TextStyle(
-                                        fontSize: 8,
+                                        fontSize: 10,
                                       ),
                                     ),
                                     Text(
                                       '${appProvider.account.totalIncome}',
                                       style: TextStyle(
-                                        fontSize: 10,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),

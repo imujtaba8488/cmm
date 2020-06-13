@@ -1,5 +1,3 @@
-import '../util/datetime_as_string.dart';
-
 class Transaction {
   final int id;
   final double amount;
@@ -25,17 +23,6 @@ class Transaction {
     this.location,
     this.date,
   }) : type = TransactionType.expense;
-
-  // String get date => DateTimeAsString.dateAsDDMMYY(_timestamp);
-
-  // String get time => DateTimeAsString.time(_timestamp);
-
-  // String get typeAsString => transactionTypeToString(type);
-
-  // @override
-  // String toString() {
-  //   return '$amount | $date $time | $type';
-  // }
 }
 
 enum TransactionType {
