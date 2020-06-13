@@ -69,6 +69,15 @@ flutter:
         - asset: assets/fonts/Cairo-Regular.ttf
         - asset: assets/fonts/Cairo-Bold.ttf
         - asset: assets/fonts/Cairo-Black.ttf
+
+    - family: Saira
+      fonts:
+        - asset: assets/fonts/Saira-Regular.ttf
+        - asset: assets/fonts/Saira-Bold.ttf
+
+    - family: Satisfy
+      fonts:
+        - asset: assets/fonts/Satisfy-Regular.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

@@ -1,3 +1,4 @@
+import 'package:custom_widgets/animated_containers/heartbeat.dart';
 import 'package:custom_widgets/animated_containers/zoom_in.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    topHeight = MediaQuery.of(context).size.height / 6.0;
+    topHeight = MediaQuery.of(context).size.height / 4.0;
     bottomHeight = MediaQuery.of(context).size.height - (topHeight + 24);
 
     return Scaffold(
@@ -26,7 +27,7 @@ class _HomepageState extends State<Homepage> {
       appBar: AppBar(
         actions: <Widget>[
           Center(
-            child: Text('Welcome Back Mujtaba!'),
+            child: Text('Welcome Back Mujtaba !'),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -57,36 +58,122 @@ class _HomepageState extends State<Homepage> {
   Widget _top(BuildContext context) {
     return Container(
       height: topHeight,
+      padding: EdgeInsets.all(18.0),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Balance',
-                ),
-                Consumer<AppProvider>(
-                  builder: (context, appProvider, child) {
-                    return ZoomIn(
-                      duration: 200,
-                      child: Text(
-                        '\$ ${appProvider.account.balance}',
-                        style: TextStyle(
-                          fontSize: 30,
-                        ),
+          Expanded(child: Consumer<AppProvider>(
+            builder: (context, appProvider, child) {
+              return Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'BALANCE',
+                      style: TextStyle(
+                        fontSize: 12,
                       ),
-                    );
-                  },
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            ZoomIn(
+                              duration: 200,
+                              child: Text(
+                                '\$ ${appProvider.account.balance}',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            appProvider.account.totalIncomeFor(DateTime.now()) >
+                                    appProvider.account
+                                        .totalExpensesFor(DateTime.now())
+                                ? Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 5),
+                                    child: Icon(Icons.arrow_upward, size: 12),
+                                  )
+                                : Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 5),
+                                    child: Icon(Icons.arrow_downward, size: 12),
+                                  ),
+                          ],
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              left: BorderSide(width: 0.2, color: Colors.white),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'Total Expenses',
+                                      style: TextStyle(
+                                        fontSize: 8,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${appProvider.account.totalExpense}',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'Total Income',
+                                      style: TextStyle(
+                                        fontSize: 8,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${appProvider.account.totalIncome}',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    appProvider.account.balance < 500
+                        ? Text(
+                            'You are running low on balance!',
+                            style: TextStyle(fontSize: 8),
+                          )
+                        : Container()
+                  ],
                 ),
-              ],
-            ),
-          )
+              );
+            },
+          ))
         ],
       ),
     );

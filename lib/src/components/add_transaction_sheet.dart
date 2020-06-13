@@ -53,7 +53,7 @@ class _AddTransactionSheetState extends State<_AddTransactionSheet> {
       height: _showError
           ? MediaQuery.of(context).size.height / 5
           : MediaQuery.of(context).size.height / 7,
-      margin: EdgeInsets.all(2.0),
+      // margin: EdgeInsets.all(2.0),
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
       ),
@@ -146,7 +146,12 @@ class _AddTransactionSheetState extends State<_AddTransactionSheet> {
     return Container(
       child: Row(
         children: <Widget>[
-          Text(label),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          ),
           Radio(
             visualDensity: VisualDensity.compact,
             onChanged: (value) {
@@ -312,7 +317,7 @@ class _CustomizedTextFormField extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10.0),
         margin: EdgeInsets.all(5.0),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[400]),
+          border: Border.all(color: Colors.grey[400], width: 0.4),
           borderRadius: BorderRadius.circular(5),
         ),
         child: TextField(
@@ -331,6 +336,7 @@ class _CustomizedTextFormField extends StatelessWidget {
           ),
           style: TextStyle(
             color: Theme.of(context).textTheme.bodyText1.color,
+            fontFamily: 'Saira'
           ),
         ),
       ),
