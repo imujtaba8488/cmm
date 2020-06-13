@@ -1,7 +1,8 @@
-import 'package:cmm/src/scoped_models/app_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+import '../providers/app_provider.dart';
 
 void showAddTransactionSheet(BuildContext context) {
   showBottomSheet(
@@ -335,9 +336,8 @@ class _CustomizedTextFormField extends StatelessWidget {
             ),
           ),
           style: TextStyle(
-            color: Theme.of(context).textTheme.bodyText1.color,
-            fontFamily: 'Saira'
-          ),
+              color: Theme.of(context).textTheme.bodyText1.color,
+              fontFamily: 'Saira'),
         ),
       ),
     );

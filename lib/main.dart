@@ -1,9 +1,8 @@
-import 'package:cmm/src/scoped_models/app_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './src/pages/home_page.dart';
-import './src/scoped_models/app_provider.dart';
+import './src/providers/app_provider.dart';
 
 main() => runApp(CMM());
 

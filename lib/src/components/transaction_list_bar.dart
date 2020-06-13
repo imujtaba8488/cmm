@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../scoped_models/app_provider.dart';
+import '../providers/app_provider.dart';
 import '../util/util';
 
 class TransactionBar extends StatefulWidget {

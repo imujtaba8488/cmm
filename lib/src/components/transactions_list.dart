@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../components/transaction_list_bar.dart';
 import '../components/transaction_list_item.dart';
-import '../scoped_models/app_provider.dart';
+import '../providers/app_provider.dart';
 import '../util/util';
 
 class Transactionslist extends StatefulWidget {

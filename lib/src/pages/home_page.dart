@@ -1,12 +1,11 @@
-import 'package:custom_widgets/animated_containers/heartbeat.dart';
 import 'package:custom_widgets/animated_containers/zoom_in.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../components/add_transaction_sheet.dart';
-import '../scoped_models/app_provider.dart';
-import '../components/transactions_list.dart';
 import '../components/app_drawer.dart';
+import '../components/transactions_list.dart';
+import '../providers/app_provider.dart';
 
 class Homepage extends StatefulWidget {
   @override
