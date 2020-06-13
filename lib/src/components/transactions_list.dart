@@ -19,26 +19,21 @@ class _TransactionslistState extends State<Transactionslist> {
     return Consumer<AppProvider>(
       builder: (context, appProvider, child) {
         return Container(
-          padding: EdgeInsets.all(1.0),
           decoration: BoxDecoration(
-            // color: Theme.of(context).backgroundColor,
-            color: Colors.white,
-            border: Border.all(width: 0.3, color: Colors.white),
+            border: Border.all(
+              width: 0.3,
+              color: Colors.white,
+            ),
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               TransactionBar(
-                dateChanged: (value) {
-                  setState(() {
-                    dateSelected = value;
-                  });
-                },
+                dateChanged: (value) => setState(() => dateSelected = value),
               ),
               Expanded(
                 child: appProvider.account.transactions.length > 0
                     ? ListView.builder(
-                        itemBuilder: listBuilder,
+                        itemBuilder: buildList,
                         itemCount: appProvider.account.transactions.length,
                       )
                     : Center(
@@ -70,7 +65,7 @@ class _TransactionslistState extends State<Transactionslist> {
     );
   }
 
-  Widget listBuilder(BuildContext context, int index) {
+  Widget buildList(BuildContext context, int index) {
     return Consumer<AppProvider>(
       builder: (context, appProvider, child) {
         return areDatesEqual(
