@@ -31,32 +31,33 @@ class _TransactionslistState extends State<Transactionslist> {
                 dateChanged: (value) => setState(() => dateSelected = value),
               ),
               Expanded(
-                child: appProvider.account.transactions.length > 0
-                    ? ListView.builder(
-                        itemBuilder: buildList,
-                        itemCount: appProvider.account.transactions.length,
-                      )
-                    : Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'No Transactions!',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
+                child:
+                    appProvider.account.transactionsFor(dateSelected).length > 0
+                        ? ListView.builder(
+                            itemBuilder: buildList,
+                            itemCount: appProvider.account.transactions.length,
+                          )
+                        : Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'No Transactions!',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  'Press the \'+\' button to add a transaction.',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12.0,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Text(
-                              'Press the \'+\' button to add a transaction.',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                          ),
               ),
             ],
           ),

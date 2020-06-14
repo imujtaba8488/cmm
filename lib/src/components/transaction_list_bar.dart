@@ -29,9 +29,8 @@ class _TransactionBarState extends State<TransactionBar> {
             children: <Widget>[
               Container(
                 decoration: BoxDecoration(
-                  border: BorderDirectional(
-                    top: BorderSide(color: Colors.grey[800]),
-                    bottom: BorderSide(color: Colors.grey[800]),
+                  border: Border(
+                    bottom: BorderSide(width: 0.3, color: Colors.white),
                   ),
                 ),
                 child: Row(
@@ -39,8 +38,10 @@ class _TransactionBarState extends State<TransactionBar> {
                   children: <Widget>[
                     Expanded(
                       child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 5,
+                          vertical: 2,
+                        ),
                         alignment: Alignment.centerLeft,
                         child: Text(
                           areDatesEqual(dateSelected, DateTime.now())
@@ -136,6 +137,7 @@ class _TransactionBarState extends State<TransactionBar> {
                       child: InkWell(
                         child: Icon(Icons.date_range),
                         onTap: () => showDatePicker(
+                        
                           context: context,
                           firstDate: DateTime(1984),
                           lastDate: DateTime.now(),

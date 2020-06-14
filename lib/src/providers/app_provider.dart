@@ -6,6 +6,8 @@ import '../models/transaction.dart';
 class AppProvider extends ChangeNotifier {
   final Account account = Account();
 
+  static int transactionId = 0;
+
   void addIncome(
     double amount, {
     String description,
@@ -13,9 +15,13 @@ class AppProvider extends ChangeNotifier {
   }) {
     account.addIncome(Transaction.income(
       amount,
+      id: transactionId,
       description: description,
       date: date,
     ));
+
+    transactionId++;
+
     notifyListeners();
   }
 
@@ -26,9 +32,18 @@ class AppProvider extends ChangeNotifier {
   }) {
     account.addExpense(Transaction.expense(
       amount,
+      id: transactionId,
       description: description,
       date: date,
     ));
+
+    transactionId++;
+
+    notifyListeners();
+  }
+
+  void updateTransaction(Transaction original, Transaction replacement) {
+    account.updateTransaction(original, replacement);
     notifyListeners();
   }
 }

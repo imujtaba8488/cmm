@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/transaction.dart';
+import '../pages/transaction_details_page.dart';
 
 class TransactionListItem extends StatelessWidget {
   final Transaction transaction;
@@ -10,6 +11,18 @@ class TransactionListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      // onTap: () => Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => TransactionDetailsPage(transaction),
+      //   ),
+      // ),
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) {
+          return TransactionDetailsPage(transaction);
+        },
+      ),
       child: Dismissible(
         key: Key('${transaction.id}'),
         child: Card(
@@ -84,7 +97,8 @@ class TransactionListItem extends StatelessWidget {
                 ],
               ),
             ),
-            trailing: Padding(
+            trailing: Container(
+              width: MediaQuery.of(context).size.width / 2.0,
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 transaction.description,
@@ -93,6 +107,8 @@ class TransactionListItem extends StatelessWidget {
                   fontSize: 12,
                   fontFamily: 'Saira',
                 ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
               ),
             ),
           ),

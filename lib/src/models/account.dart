@@ -22,6 +22,24 @@ class Account {
     }
   }
 
+  void updateTransaction(Transaction original, Transaction replacement) {
+    transactions.forEach((transaction) {
+      if (original.id == transaction.id) {
+        int indexOf = transactions.indexOf(transaction);
+
+        _balance -= transaction.amount;
+
+        transactions.removeAt(indexOf);
+
+        replacement.type == TransactionType.income
+            ? addIncome(
+                replacement,
+              )
+            : addExpense(replacement);
+      }
+    });
+  }
+
   double get balance => _balance;
 
   double get totalIncome {
@@ -53,17 +71,6 @@ class Account {
       for (int i = 0; i < transactions.length; i++) {
         if (transactions[i].id == id) {
           transactions.removeAt(i);
-        }
-      }
-    }
-  }
-
-  void updateTransaction(int id, Transaction transaction) {
-    if (id > 0) {
-      for (int i = 0; i < transactions.length; i++) {
-        if (transactions[i].id == id) {
-          transactions.removeAt(i);
-          transactions.insert(i, transaction);
         }
       }
     }
