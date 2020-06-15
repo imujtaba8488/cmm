@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/transaction.dart';
-import '../widgets/radio_selection.dart';
-import '../widgets/date_selector.dart';
 import '../providers/app_provider.dart';
+import '../widgets/date_selector.dart';
+import '../widgets/radio_selection.dart';
 
 class TransactionDetailsPage extends StatefulWidget {
   final Transaction transaction;
@@ -21,6 +20,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   TextEditingController amountFieldController, descriptionFieldController;
   bool isEditingEnabled = false;
   DateTime dateSelected;
+  int valueSelected;
 
   @override
   void initState() {
@@ -35,6 +35,8 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     );
 
     dateSelected = widget.transaction.date;
+
+    valueSelected = widget.transaction.type == TransactionType.expense ? 0 : 1;
   }
 
   @override
@@ -94,7 +96,13 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
                         ),
                         width: MediaQuery.of(context).size.width / 2.1,
                         child: OptionSelector(
+                          initialValue: valueSelected,
                           isEnabled: isEditingEnabled,
+                          valueSelected: (value) {
+                            setState(() {
+                              valueSelected = value;
+                            });
+                          },
                         ),
                       ),
                       Container(
@@ -204,22 +212,25 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
       final double amount = double.parse(amountFieldController.text);
       final String description = descriptionFieldController.text;
 
-      Transaction xTransaction =
-          widget.transaction.type == TransactionType.income
+      TransactionType transactionType =
+          valueSelected == 0 ? TransactionType.expense : TransactionType.income;
+
+      Transaction transaction =
+          transactionType == TransactionType.income
               ? Transaction.income(
                   amount,
                   description: description,
                   date: dateSelected,
                   id: widget.transaction.id,
                 )
-              : Transaction.income(
+              : Transaction.expense(
                   amount,
                   description: description,
                   date: dateSelected,
                   id: widget.transaction.id,
                 );
 
-      appProvder.updateTransaction(widget.transaction, xTransaction);
+      appProvder.updateTransaction(widget.transaction, transaction);
 
       Navigator.pop(context);
     }

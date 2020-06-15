@@ -2,26 +2,38 @@ import 'package:flutter/material.dart';
 
 class OptionSelector extends StatefulWidget {
   final bool isEnabled;
+  final initialValue;
+  final Function valueSelected;
 
-  OptionSelector({this.isEnabled = true});
+  OptionSelector({
+    this.isEnabled = true,
+    this.initialValue = 0,
+    this.valueSelected,
+  });
 
   @override
   _OptionSelectorState createState() => _OptionSelectorState();
 }
 
 class _OptionSelectorState extends State<OptionSelector> {
-  int selectedValue = 0;
+  int selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValue = widget.initialValue;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        selectionOption(
+        _option(
           label: 'Expense',
           position: 0,
           selected: selectedValue,
         ),
-        selectionOption(
+        _option(
           label: 'Income',
           position: 1,
           selected: selectedValue,
@@ -30,7 +42,7 @@ class _OptionSelectorState extends State<OptionSelector> {
     );
   }
 
-  Widget selectionOption({
+  Widget _option({
     String label,
     int selected = 0,
     int position = 0,
@@ -52,6 +64,10 @@ class _OptionSelectorState extends State<OptionSelector> {
                 ? (value) {
                     setState(() {
                       selectedValue = value;
+
+                      if (widget.valueSelected != null) {
+                        widget.valueSelected(value);
+                      }
                     });
                   }
                 : (value) {},

@@ -47,6 +47,9 @@ class CMM extends StatelessWidget {
             backgroundColor: const Color(0xFF02072F),
             primaryIconTheme: IconThemeData(color: Colors.white),
             unselectedWidgetColor: Colors.grey,
+            floatingActionButtonTheme: FloatingActionButtonThemeData(
+              backgroundColor: Colors.green,
+            )
           ),
           home: Scaffold(
             body: Homepage(),
