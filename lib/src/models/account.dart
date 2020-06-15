@@ -27,10 +27,17 @@ class Account {
       if (original.id == transaction.id) {
         int indexOf = transactions.indexOf(transaction);
 
-        _balance -= transaction.amount;
+        // Add or deduct the balance based on the transaction type.
+        if (original.type == TransactionType.income) {
+          _balance -= transaction.amount;
+        } else if (original.type == TransactionType.expense) {
+          _balance += transaction.amount;
+        }
 
+        // Delete the transaction at the given index.
         transactions.removeAt(indexOf);
 
+        // Add the replacement transaction.
         replacement.type == TransactionType.income
             ? addIncome(
                 replacement,
