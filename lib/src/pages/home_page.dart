@@ -6,6 +6,7 @@ import '../components/add_transaction_sheet.dart';
 import '../components/app_drawer.dart';
 import '../components/transactions_list.dart';
 import '../providers/app_provider.dart';
+import '../components/bottom_nav_bar.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -53,46 +54,7 @@ class _HomepageState extends State<Homepage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: Theme.of(context).backgroundColor,
-        shape: CircularNotchedRectangle(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            
-            Container(
-              width: MediaQuery.of(context).size.width / 10.0,
-                 height: 40,
-
-              child: Icon(Icons.zoom_out_map),
-            ),
-            Container(
-                 height: 40,
-              width: MediaQuery.of(context).size.width / 10.0,
-
-              child: Icon(Icons.zoom_out_map),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width / 10.0,
-              height: 40,
-
-              child: null,
-            ),
-            Container(
-                 height: 40,
-              width: MediaQuery.of(context).size.width / 10.0,
-
-              child: Icon(Icons.zoom_out_map),
-            ),
-            Container(
-                 height: 40,
-              width: MediaQuery.of(context).size.width / 10.0,
-
-              child: Icon(Icons.zoom_out_map),
-            ),
-          ],
-        ),
-      )
+      bottomNavigationBar: BottomNavBar(),
     );
   }
 
