@@ -39,7 +39,9 @@ class _HomepageState extends State<Homepage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => showAddTransactionSheet(context),
         child: Icon(Icons.add),
+        // mini: true,
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -51,6 +53,46 @@ class _HomepageState extends State<Homepage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).backgroundColor,
+        shape: CircularNotchedRectangle(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            
+            Container(
+              width: MediaQuery.of(context).size.width / 10.0,
+                 height: 40,
+
+              child: Icon(Icons.zoom_out_map),
+            ),
+            Container(
+                 height: 40,
+              width: MediaQuery.of(context).size.width / 10.0,
+
+              child: Icon(Icons.zoom_out_map),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width / 10.0,
+              height: 40,
+
+              child: null,
+            ),
+            Container(
+                 height: 40,
+              width: MediaQuery.of(context).size.width / 10.0,
+
+              child: Icon(Icons.zoom_out_map),
+            ),
+            Container(
+                 height: 40,
+              width: MediaQuery.of(context).size.width / 10.0,
+
+              child: Icon(Icons.zoom_out_map),
+            ),
+          ],
+        ),
+      )
     );
   }
 
