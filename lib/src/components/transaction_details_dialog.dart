@@ -12,7 +12,8 @@ class TransactionDetailsDialog extends StatefulWidget {
   TransactionDetailsDialog(this.transaction);
 
   @override
-  _TransactionDetailsDialogState createState() => _TransactionDetailsDialogState();
+  _TransactionDetailsDialogState createState() =>
+      _TransactionDetailsDialogState();
 }
 
 class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
@@ -52,7 +53,7 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
         decoration: BoxDecoration(
           border: Border.all(
             color: Colors.white,
-            width: (1.5),
+            width: 1.5,
           ),
           borderRadius: BorderRadius.circular(5.0),
         ),
@@ -61,120 +62,127 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
             isEditingEnabled
                 ? Container(
                     margin: EdgeInsets.all(5.0),
-                    child: Text(
-                      'Tap \'Save\' to save the Transaction.',
-                      style: TextStyle(
-                        fontSize: 10.0,
-                      ),
-                    ),
+                    child: _helpText('Tap \'Save\' to save the Transaction.'),
                   )
                 : Container(
                     margin: EdgeInsets.all(5.0),
-                    child: Text(
-                      'Tap \'Edit\' to edit the Transaction.',
-                      style: TextStyle(
-                        fontSize: 10.0,
-                      ),
-                    ),
+                    child: _helpText('Tap \'Edit\' to edit the Transaction.'),
                   ),
-            Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.all(5.0),
-                        margin: EdgeInsets.all(5.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.white,
-                              width: isEditingEnabled ? 0.3 : 0.1),
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        width: MediaQuery.of(context).size.width / 2.1,
-                        child: OptionSelector(
-                          initialValue: valueSelected,
-                          isEnabled: isEditingEnabled,
-                          valueSelected: (value) {
-                            setState(() {
-                              valueSelected = value;
-                            });
-                          },
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(100.0),
-                          border: Border.all(color: Colors.white),
-                        ),
-                        padding: const EdgeInsets.all(10.0),
-                        margin: const EdgeInsets.all(5.0),
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              isEditingEnabled = !isEditingEnabled;
-                              if (isEditingEnabled == false) {
-                                _onSaved();
-                              }
-                            });
-                          },
-                          child: Row(
-                            children: <Widget>[
-                              Text(isEditingEnabled ? 'Save' : 'Edit'),
-                              SizedBox(width: 5.0),
-                              Icon(isEditingEnabled ? Icons.save : Icons.edit),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 5.0),
-                  Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: _customizedTextFormField(
-                        label: 'Amount',
-                        textEditingController: amountFieldController,
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: _customizedTextFormField(
-                      label: 'Description',
-                      textEditingController: descriptionFieldController,
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(5.0),
-                    decoration: BoxDecoration(
-                      border: isEditingEnabled
-                          ? Border.all(color: Colors.white, width: 0.3)
-                          : Border.all(color: Colors.white, width: 0.1),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        DateSelector(
-                          currentDate: widget.transaction.date,
-                          isEnabled: isEditingEnabled,
-                          dateSelected: (value) {
-                            setState(() {
-                              dateSelected = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _form(),
           ],
         ),
+      ),
+    );
+  }
+
+  Form _form() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              _customizedOptionSelector(),
+              _editSaveButton(),
+            ],
+          ),
+          SizedBox(height: 5.0),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: _customizedTextFormField(
+              label: 'Amount',
+              textEditingController: amountFieldController,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: _customizedTextFormField(
+              label: 'Description',
+              textEditingController: descriptionFieldController,
+            ),
+          ),
+          _customizedDateSelector(),
+        ],
+      ),
+    );
+  }
+
+  Widget _editSaveButton() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.green,
+        borderRadius: BorderRadius.circular(100.0),
+        border: Border.all(color: Colors.white),
+      ),
+      padding: const EdgeInsets.all(10.0),
+      margin: const EdgeInsets.all(5.0),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            isEditingEnabled = !isEditingEnabled;
+            if (isEditingEnabled == false) {
+              _onSaved();
+            }
+          });
+        },
+        child: Row(
+          children: <Widget>[
+            Text(isEditingEnabled ? 'Save' : 'Edit'),
+            SizedBox(width: 5.0),
+            Icon(isEditingEnabled ? Icons.save : Icons.edit),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _customizedOptionSelector() {
+    return Container(
+      padding: EdgeInsets.all(5.0),
+      margin: EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.white,
+          width: isEditingEnabled ? 0.3 : 0.1,
+        ),
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: OptionSelector(
+        initialValue: valueSelected,
+        isEnabled: isEditingEnabled,
+        valueSelected: (value) {
+          setState(() {
+            valueSelected = value;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _customizedDateSelector() {
+    return Container(
+      margin: EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        border: isEditingEnabled
+            ? Border.all(color: Colors.white, width: 0.3)
+            : Border.all(color: Colors.white, width: 0.1),
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          DateSelector(
+            currentDate: widget.transaction.date,
+            isEnabled: isEditingEnabled,
+            dateSelected: (value) {
+              setState(() {
+                dateSelected = value;
+              });
+            },
+          ),
+        ],
       ),
     );
   }
@@ -236,5 +244,14 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
 
       Navigator.pop(context);
     }
+  }
+
+  Text _helpText(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 10.0,
+      ),
+    );
   }
 }
