@@ -84,35 +84,48 @@ class _HomepageState extends State<Homepage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            ZoomIn(
-                              duration: 200,
-                              child: Text(
-                                '\$ ${appProvider.account.balance}',
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            appProvider.account.totalIncomeFor(DateTime.now()) >
-                                    appProvider.account
-                                        .totalExpensesFor(DateTime.now())
-                                ? Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 5),
-                                    child: Icon(Icons.arrow_upward, size: 12),
-                                  )
-                                : Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 5),
-                                    child: Icon(Icons.arrow_downward, size: 12),
+                        Container(
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          child: FittedBox(
+                            child: Row(
+                              children: <Widget>[
+                                ZoomIn(
+                                  duration: 200,
+                                  child: Text(
+                                    '\$ ${appProvider.account.balance}',
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                          ],
+                                ),
+                                appProvider.account
+                                            .totalIncomeFor(DateTime.now()) >
+                                        appProvider.account.totalExpensesFor(
+                                          DateTime.now(),
+                                        )
+                                    ? Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(horizontal: 5),
+                                        child:
+                                            Icon(Icons.arrow_upward, size: 12),
+                                      )
+                                    : Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 5,
+                                        ),
+                                        child: Icon(
+                                          Icons.arrow_downward,
+                                          size: 12,
+                                        ),
+                                      ),
+                              ],
+                            ),
+                          ),
                         ),
                         Container(
                           padding: EdgeInsets.all(5.0),
+                          width: MediaQuery.of(context).size.width / 2,
                           decoration: BoxDecoration(
                             border: Border(
                               left: BorderSide(
@@ -121,50 +134,52 @@ class _HomepageState extends State<Homepage> {
                               ),
                             ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    Text(
-                                      'Total Expenses',
-                                      style: TextStyle(
-                                        fontSize: 10,
+                          child: FittedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Text(
+                                        'Total Expenses',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '${appProvider.account.totalExpense}',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
+                                      Text(
+                                        '\$ ${appProvider.account.totalExpense}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    Text(
-                                      'Total Income',
-                                      style: TextStyle(
-                                        fontSize: 10,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Text(
+                                        'Total Income',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '${appProvider.account.totalIncome}',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
+                                      Text(
+                                        '\$ ${appProvider.account.totalIncome}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         )
                       ],

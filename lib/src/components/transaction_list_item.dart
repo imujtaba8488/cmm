@@ -80,12 +80,14 @@ class TransactionListItem extends StatelessWidget {
                       color: Colors.grey,
                     ),
                   ),
-                  Text(
-                    '\$ ${transaction.amount}',
-                    style: TextStyle(
-                      color: transaction.type == TransactionType.income
-                          ? Colors.blue
-                          : Colors.red,
+                  FittedBox(
+                    child: Text(
+                      '\$ ${transaction.amount}',
+                      style: TextStyle(
+                        color: transaction.type == TransactionType.income
+                            ? Colors.blue
+                            : Colors.red,
+                      ),
                     ),
                   ),
                 ],
