@@ -186,7 +186,7 @@ class _TransactionBarState extends State<TransactionBar> {
                     ),
                   ),
                   Text(
-                    '${appProvider.account.totalExpensesFor(dateSelected)}',
+                    '\$ ${appProvider.account.totalExpensesFor(dateSelected)}',
                     style: TextStyle(
                       fontSize: 14,
                     ),
@@ -206,7 +206,7 @@ class _TransactionBarState extends State<TransactionBar> {
                     ),
                   ),
                   Text(
-                    '${appProvider.account.totalIncomeFor(dateSelected)}',
+                    '\$ ${appProvider.account.totalIncomeFor(dateSelected)}',
                     style: TextStyle(
                       fontSize: 14,
                     ),

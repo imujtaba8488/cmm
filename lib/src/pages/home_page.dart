@@ -81,113 +81,15 @@ class _HomepageState extends State<Homepage> {
                         fontSize: 12,
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2.5,
-                          child: FittedBox(
-                            child: Row(
-                              children: <Widget>[
-                                ZoomIn(
-                                  duration: 200,
-                                  child: Text(
-                                    '\$ ${appProvider.account.balance}',
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                appProvider.account
-                                            .totalIncomeFor(DateTime.now()) >
-                                        appProvider.account.totalExpensesFor(
-                                          DateTime.now(),
-                                        )
-                                    ? Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 5),
-                                        child:
-                                            Icon(Icons.arrow_upward, size: 12),
-                                      )
-                                    : Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 5,
-                                        ),
-                                        child: Icon(
-                                          Icons.arrow_downward,
-                                          size: 12,
-                                        ),
-                                      ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(5.0),
-                          width: MediaQuery.of(context).size.width / 2,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              left: BorderSide(
-                                width: 0.2,
-                                color: Colors.white,
+                    _balanceAndIncomeExpenseBar(appProvider),
+                    appProvider.account.balance < 500
+                        ? Container(
+                            width: MediaQuery.of(context).size.width / 2.6,
+                            child: FittedBox(
+                              child: Text(
+                                'You are running low on balance!',
                               ),
                             ),
-                          ),
-                          child: FittedBox(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Text(
-                                        'Total Expenses',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                      Text(
-                                        '\$ ${appProvider.account.totalExpense}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Text(
-                                        'Total Income',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                      Text(
-                                        '\$ ${appProvider.account.totalIncome}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    appProvider.account.balance < 500
-                        ? Text(
-                            'You are running low on balance!',
-                            style: TextStyle(fontSize: 8),
                           )
                         : Container()
                   ],
@@ -196,6 +98,113 @@ class _HomepageState extends State<Homepage> {
             },
           ))
         ],
+      ),
+    );
+  }
+
+  Widget _balanceAndIncomeExpenseBar(AppProvider appProvider) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Container(
+          width: MediaQuery.of(context).size.width / 2.5,
+          child: FittedBox(
+            child: Row(
+              children: <Widget>[
+                ZoomIn(
+                  duration: 200,
+                  child: Text(
+                    '\$ ${appProvider.account.balance}',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                appProvider.account.totalIncomeFor(DateTime.now()) >
+                        appProvider.account.totalExpensesFor(
+                          DateTime.now(),
+                        )
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        child: Icon(Icons.arrow_upward, size: 12),
+                      )
+                    : Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 5,
+                        ),
+                        child: Icon(
+                          Icons.arrow_downward,
+                          size: 12,
+                        ),
+                      ),
+              ],
+            ),
+          ),
+        ),
+        _totalIncomeExpense(appProvider),
+      ],
+    );
+  }
+
+  Widget _totalIncomeExpense(AppProvider appProvider) {
+    return Container(
+      padding: EdgeInsets.all(5.0),
+      width: MediaQuery.of(context).size.width / 2,
+      decoration: BoxDecoration(
+        border: Border(
+          left: BorderSide(
+            width: 0.2,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      child: FittedBox(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    'Total Expenses',
+                    style: TextStyle(
+                      fontSize: 10,
+                    ),
+                  ),
+                  Text(
+                    '\$ ${appProvider.account.totalExpense}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    'Total Income',
+                    style: TextStyle(
+                      fontSize: 10,
+                    ),
+                  ),
+                  Text(
+                    '\$ ${appProvider.account.totalIncome}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
