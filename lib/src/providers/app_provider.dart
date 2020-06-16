@@ -42,7 +42,7 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateTransaction(Transaction original, Transaction replacement) {
+  void updateTransaction({Transaction original, Transaction replacement}) {
     account.updateTransaction(original, replacement);
     notifyListeners();
   }

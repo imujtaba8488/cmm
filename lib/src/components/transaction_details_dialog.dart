@@ -6,16 +6,16 @@ import '../providers/app_provider.dart';
 import '../widgets/date_selector.dart';
 import '../widgets/radio_selection.dart';
 
-class TransactionDetailsPage extends StatefulWidget {
+class TransactionDetailsDialog extends StatefulWidget {
   final Transaction transaction;
 
-  TransactionDetailsPage(this.transaction);
+  TransactionDetailsDialog(this.transaction);
 
   @override
-  _TransactionDetailsPageState createState() => _TransactionDetailsPageState();
+  _TransactionDetailsDialogState createState() => _TransactionDetailsDialogState();
 }
 
-class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
+class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
   GlobalKey<FormState> _formKey = GlobalKey();
   TextEditingController amountFieldController, descriptionFieldController;
   bool isEditingEnabled = false;
@@ -215,22 +215,24 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
       TransactionType transactionType =
           valueSelected == 0 ? TransactionType.expense : TransactionType.income;
 
-      Transaction transaction =
-          transactionType == TransactionType.income
-              ? Transaction.income(
-                  amount,
-                  description: description,
-                  date: dateSelected,
-                  id: widget.transaction.id,
-                )
-              : Transaction.expense(
-                  amount,
-                  description: description,
-                  date: dateSelected,
-                  id: widget.transaction.id,
-                );
+      Transaction transaction = transactionType == TransactionType.income
+          ? Transaction.income(
+              amount,
+              description: description,
+              date: dateSelected,
+              id: widget.transaction.id,
+            )
+          : Transaction.expense(
+              amount,
+              description: description,
+              date: dateSelected,
+              id: widget.transaction.id,
+            );
 
-      appProvder.updateTransaction(widget.transaction, transaction);
+      appProvder.updateTransaction(
+        original: widget.transaction,
+        replacement: transaction,
+      );
 
       Navigator.pop(context);
     }

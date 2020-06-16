@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/transaction.dart';
-import '../pages/transaction_details_page.dart';
+import '../components/transaction_details_dialog.dart';
 
 class TransactionListItem extends StatelessWidget {
   final Transaction transaction;
@@ -11,16 +11,10 @@ class TransactionListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      // onTap: () => Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => TransactionDetailsPage(transaction),
-      //   ),
-      // ),
       onTap: () => showDialog(
         context: context,
         builder: (context) {
-          return TransactionDetailsPage(transaction);
+          return TransactionDetailsDialog(transaction);
         },
       ),
       child: Dismissible(

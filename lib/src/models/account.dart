@@ -15,36 +15,33 @@ class Account {
   }
 
   void addExpense(Transaction transaction) {
-    if (transaction.type == TransactionType.expense &&
-        transaction.amount < _balance) {
+    if (transaction.type == TransactionType.expense) {
       transactions.add(transaction);
       _balance -= transaction.amount;
     }
   }
 
   void updateTransaction(Transaction original, Transaction replacement) {
-    transactions.forEach((transaction) {
-      if (original.id == transaction.id) {
-        int indexOf = transactions.indexOf(transaction);
-
+    for (int index = 0; index < transactions.length; index++) {
+      if (original.id == transactions[index].id) {
         // Add or deduct the balance based on the transaction type.
         if (original.type == TransactionType.income) {
-          _balance -= transaction.amount;
+          _balance -= transactions[index].amount;
         } else if (original.type == TransactionType.expense) {
-          _balance += transaction.amount;
+          _balance += transactions[index].amount;
         }
 
         // Delete the transaction at the given index.
-        transactions.removeAt(indexOf);
+        transactions.removeAt(index);
 
         // Add the replacement transaction.
         replacement.type == TransactionType.income
-            ? addIncome(
-                replacement,
-              )
+            ? addIncome(replacement)
             : addExpense(replacement);
+
+        break;
       }
-    });
+    }
   }
 
   double get balance => _balance;
