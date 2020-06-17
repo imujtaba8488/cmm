@@ -1,12 +1,13 @@
-import 'package:custom_widgets/animated_containers/zoom_in.dart';
+import 'package:cmm/src/currency_drop_down/countries.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../components/add_transaction_sheet.dart';
-import '../components/app_drawer.dart';
 import '../components/transactions_list.dart';
 import '../providers/app_provider.dart';
 import '../components/bottom_nav_bar.dart';
+import '../currency_drop_down/currency_drop_down.dart';
+import '../widgets/basic_dialog.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -23,24 +24,105 @@ class _HomepageState extends State<Homepage> {
     bottomHeight = MediaQuery.of(context).size.height - (topHeight + 24);
 
     return Scaffold(
-      drawer: AppDrawer(),
       appBar: AppBar(
-        actions: <Widget>[
-          Center(
-            child: Text('Welcome Back Mujtaba !'),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            backgroundImage: AssetImage('assets/test.jpg'),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundImage: AssetImage('assets/test.jpg'),
+        ),
+        title: Text(
+          'Welcome Back Mujtaba !',
+          style: TextStyle(
+            fontSize: 12,
+          ),
+        ),
+        actions: <Widget>[
+          // Consumer<AppProvider>(
+          //   builder: (context, appProvider, child) {
+          //     return CurrencyDropDown(
+          //       onSelected: (value) => appProvider.currency = value,
+          //     );
+          //   },
+          // ),
+
+          InkWell(
+            child: Consumer<AppProvider>(
+              builder: (context, appProvider, child) {
+                return Container(
+                  width: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    border: Border.all(color: Colors.white),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  padding: EdgeInsets.all(10.0),
+                  margin: EdgeInsets.all(10.0),
+                  child: Center(
+                    child: Text('${appProvider.currency}'),
+                  ),
+                );
+              },
+            ),
+            onTap: () => showDialog(
+              context: context,
+              builder: (context) => BasicDialog(
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Search',
+                          labelStyle: TextStyle(
+                            color: Colors.white,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          return Consumer<AppProvider>(
+                            builder: (context, appProvider, child) {
+                              return InkWell(
+                                onTap: () {
+                                  appProvider.currency =
+                                      currencyCodesSorted()[index];
+                                  Navigator.pop(context);
+                                },
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(currencyCodesSorted()[index]),
+                                    Divider(
+                                      color: Colors.white,
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        itemCount: currencyCodesSorted().length,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           )
         ],
+        shape: RoundedRectangleBorder(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showAddTransactionSheet(context),
         child: Icon(Icons.add),
-        // mini: true,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Colors.white,
@@ -66,59 +148,62 @@ class _HomepageState extends State<Homepage> {
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(child: Consumer<AppProvider>(
-            builder: (context, appProvider, child) {
-              return Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'BALANCE',
-                      style: TextStyle(
-                        fontSize: 12,
+      child: Consumer<AppProvider>(
+        builder: (context, appProvider, child) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  _balanceAndIncomeExpenseBar(appProvider),
+                  _totalIncomeExpense(appProvider),
+                ],
+              ),
+              appProvider.account.balance < 500
+                  ? Container(
+                      width: MediaQuery.of(context).size.width / 2.6,
+                      child: FittedBox(
+                        child: Text(
+                          'You are running low on balance!',
+                        ),
                       ),
-                    ),
-                    _balanceAndIncomeExpenseBar(appProvider),
-                    appProvider.account.balance < 500
-                        ? Container(
-                            width: MediaQuery.of(context).size.width / 2.6,
-                            child: FittedBox(
-                              child: Text(
-                                'You are running low on balance!',
-                              ),
-                            ),
-                          )
-                        : Container()
-                  ],
-                ),
-              );
-            },
-          ))
-        ],
+                    )
+                  : Container(),
+            ],
+          );
+        },
       ),
     );
   }
 
   Widget _balanceAndIncomeExpenseBar(AppProvider appProvider) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Container(
-          width: MediaQuery.of(context).size.width / 2.5,
-          child: FittedBox(
+    return Container(
+      width: MediaQuery.of(context).size.width / 2.5,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'BALANCE',
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          ),
+          FittedBox(
             child: Row(
               children: <Widget>[
-                ZoomIn(
-                  duration: 200,
-                  child: Text(
-                    '\$ ${appProvider.account.balance}',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
+                Text(
+                  '${appProvider.currency}',
+                  style: TextStyle(
+                    fontSize: 12,
+                  ),
+                ),
+                Text(
+                  ' ${appProvider.account.balance}',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 appProvider.account.totalIncomeFor(DateTime.now()) >
@@ -141,16 +226,15 @@ class _HomepageState extends State<Homepage> {
               ],
             ),
           ),
-        ),
-        _totalIncomeExpense(appProvider),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _totalIncomeExpense(AppProvider appProvider) {
     return Container(
+      width: MediaQuery.of(context).size.width / 3.0,
       padding: EdgeInsets.all(5.0),
-      width: MediaQuery.of(context).size.width / 2,
       decoration: BoxDecoration(
         border: Border(
           left: BorderSide(
@@ -159,12 +243,12 @@ class _HomepageState extends State<Homepage> {
           ),
         ),
       ),
-      child: FittedBox(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FittedBox(
               child: Column(
                 children: <Widget>[
                   Text(
@@ -183,8 +267,10 @@ class _HomepageState extends State<Homepage> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FittedBox(
               child: Column(
                 children: <Widget>[
                   Text(
@@ -202,9 +288,9 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ],
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }

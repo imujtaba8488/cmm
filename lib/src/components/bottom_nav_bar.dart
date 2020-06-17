@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../pages/all_transactions_page.dart';
+
 class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -20,11 +22,15 @@ class BottomNavBar extends StatelessWidget {
                 icon: Icon(Icons.settings),
                 label: 'Settings',
                 onPressed: () {}),
-            _item(
-              context,
-              icon: Icon(Icons.search),
-              label: 'Transactions',
-            ),
+            _item(context, icon: Icon(Icons.search), label: 'Transactions',
+                onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AllTransactionsPage(),
+                ),
+              );
+            }),
             _item(
               context,
               icon: null,

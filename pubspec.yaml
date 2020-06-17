@@ -28,9 +28,8 @@ dependencies:
   custom_widgets:
     path: '/Users/imujtabanazki/flutter_projects/custom_widgets'
   intl: ^0.16.1
-
-
-
+  country_currency_pickers: ^1.0.1
+  menu_button: ^1.2.1
 
 dev_dependencies:
   flutter_test:

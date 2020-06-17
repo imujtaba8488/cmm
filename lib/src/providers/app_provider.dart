@@ -5,6 +5,7 @@ import '../models/transaction.dart';
 
 class AppProvider extends ChangeNotifier {
   final Account account = Account();
+  String _currency = 'USD';
 
   static int transactionId = 0;
 
@@ -46,4 +47,11 @@ class AppProvider extends ChangeNotifier {
     account.updateTransaction(original, replacement);
     notifyListeners();
   }
+
+  set currency(String value) {
+    _currency = value;
+    notifyListeners();
+  }
+
+  String get currency => _currency;
 }
