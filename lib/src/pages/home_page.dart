@@ -1,4 +1,3 @@
-import 'package:cmm/src/currency_drop_down/countries.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,8 +5,7 @@ import '../components/add_transaction_sheet.dart';
 import '../components/transactions_list.dart';
 import '../providers/app_provider.dart';
 import '../components/bottom_nav_bar.dart';
-import '../currency_drop_down/currency_drop_down.dart';
-import '../widgets/basic_dialog.dart';
+import '../country_currency_chooser/currency_chooser_dialog.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -38,14 +36,6 @@ class _HomepageState extends State<Homepage> {
           ),
         ),
         actions: <Widget>[
-          // Consumer<AppProvider>(
-          //   builder: (context, appProvider, child) {
-          //     return CurrencyDropDown(
-          //       onSelected: (value) => appProvider.currency = value,
-          //     );
-          //   },
-          // ),
-
           InkWell(
             child: Consumer<AppProvider>(
               builder: (context, appProvider, child) {
@@ -66,55 +56,19 @@ class _HomepageState extends State<Homepage> {
             ),
             onTap: () => showDialog(
               context: context,
-              builder: (context) => BasicDialog(
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Search',
-                          labelStyle: TextStyle(
-                            color: Colors.white,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          return Consumer<AppProvider>(
-                            builder: (context, appProvider, child) {
-                              return InkWell(
-                                onTap: () {
-                                  appProvider.currency =
-                                      currencyCodesSorted()[index];
-                                  Navigator.pop(context);
-                                },
-                                child: Column(
-                                  children: <Widget>[
-                                    Text(currencyCodesSorted()[index]),
-                                    Divider(
-                                      color: Colors.white,
-                                    )
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        itemCount: currencyCodesSorted().length,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              builder: (context) {
+                return Consumer<AppProvider>(
+                  builder: (context, appProvider, child) {
+                    return CurrencyChooserDialog(
+                      interfaceColor: Colors.white,
+                      backgroundColor: Theme.of(context).backgroundColor,
+                      selectedCurrency: (flag, value) {
+                        appProvider.currency = value;
+                      },
+                    );
+                  },
+                );
+              },
             ),
           )
         ],
