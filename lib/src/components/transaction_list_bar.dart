@@ -137,7 +137,6 @@ class _TransactionBarState extends State<TransactionBar> {
                       child: InkWell(
                         child: Icon(Icons.date_range),
                         onTap: () => showDatePicker(
-                        
                           context: context,
                           firstDate: DateTime(1984),
                           lastDate: DateTime.now(),
@@ -180,19 +179,30 @@ class _TransactionBarState extends State<TransactionBar> {
               Column(
                 children: <Widget>[
                   Text(
-                    'EXPENSES',
+                    'EXPENSE',
                     style: TextStyle(
                       fontSize: 8,
                     ),
                   ),
-                  Text(
-                    '\$ ${appProvider.account.totalExpensesFor(dateSelected)}',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        '${appProvider.currency}',
+                        style: TextStyle(
+                          fontSize: 10,
+                        ),
+                      ),
+                      SizedBox(width: 5.0),
+                      Text(
+                        '${appProvider.account.totalExpensesFor(dateSelected)}',
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-              )
+              ),
             ],
           ),
           Row(
@@ -205,14 +215,25 @@ class _TransactionBarState extends State<TransactionBar> {
                       fontSize: 8,
                     ),
                   ),
-                  Text(
-                    '\$ ${appProvider.account.totalIncomeFor(dateSelected)}',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        '${appProvider.currency}',
+                        style: TextStyle(
+                          fontSize: 10,
+                        ),
+                      ),
+                      SizedBox(width: 5.0),
+                      Text(
+                        '${appProvider.account.totalIncomeFor(dateSelected)}',
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ],

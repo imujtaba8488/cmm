@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/transaction.dart';
 import '../components/transaction_details_dialog.dart';
+import '../providers/app_provider.dart';
 
 class TransactionListItem extends StatelessWidget {
   final Transaction transaction;
@@ -80,16 +82,31 @@ class TransactionListItem extends StatelessWidget {
                       color: Colors.grey,
                     ),
                   ),
-                  FittedBox(
-                    child: Text(
-                      '\$ ${transaction.amount}',
-                      style: TextStyle(
-                        color: transaction.type == TransactionType.income
-                            ? Colors.blue
-                            : Colors.red,
-                      ),
-                    ),
-                  ),
+                  FittedBox(child: Consumer<AppProvider>(
+                      builder: (context, appProvider, child) {
+                    return Row(
+                      children: <Widget>[
+                        Text(
+                          '${appProvider.currency}',
+                          style: TextStyle(
+                            color: transaction.type == TransactionType.income
+                                ? Colors.blue
+                                : Colors.red,
+                            fontSize: 10.0,
+                          ),
+                        ),
+                        SizedBox(width: 5.0),
+                        Text(
+                          '${transaction.amount}',
+                          style: TextStyle(
+                            color: transaction.type == TransactionType.income
+                                ? Colors.blue
+                                : Colors.red,
+                          ),
+                        ),
+                      ],
+                    );
+                  })),
                 ],
               ),
             ),

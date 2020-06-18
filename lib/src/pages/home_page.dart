@@ -211,12 +211,23 @@ class _HomepageState extends State<Homepage> {
                       fontSize: 10,
                     ),
                   ),
-                  Text(
-                    '\$ ${appProvider.account.totalExpense}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        '${appProvider.currency}',
+                        style: TextStyle(
+                          fontSize: 10,
+                        ),
+                      ),
+                      SizedBox(width: 5.0),
+                      Text(
+                        '${appProvider.account.totalExpense}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -233,12 +244,23 @@ class _HomepageState extends State<Homepage> {
                       fontSize: 10,
                     ),
                   ),
-                  Text(
-                    '\$ ${appProvider.account.totalIncome}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        '${appProvider.currency}',
+                        style: TextStyle(
+                          fontSize: 10,
+                        ),
+                      ),
+                      SizedBox(width: 5.0),
+                      Text(
+                        '${appProvider.account.totalIncome}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
