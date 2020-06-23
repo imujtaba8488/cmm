@@ -7,8 +7,12 @@ import '../providers/app_provider.dart';
 
 class TransactionListItem extends StatelessWidget {
   final Transaction transaction;
+  final bool showTimeStamp;
 
-  TransactionListItem({@required this.transaction});
+  TransactionListItem({
+    @required this.transaction,
+    this.showTimeStamp = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,46 +33,55 @@ class TransactionListItem extends StatelessWidget {
                 ? Container(
                     decoration: BoxDecoration(
                       color: Colors.blue,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(4.0),
-                        bottomLeft: Radius.circular(4.0),
-                      ),
+                      shape: BoxShape.circle,
+                      // borderRadius: BorderRadius.only(
+                      //   topLeft: Radius.circular(4.0),
+                      //   bottomLeft: Radius.circular(4.0),
+                      // ),
                     ),
+                    margin: EdgeInsets.all(2.0),
                     padding: EdgeInsets.all(10),
-                    child: Column(children: <Widget>[
-                      Text(
-                        'Income',
-                        style: TextStyle(
-                          fontSize: 10.0,
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_upward,
-                        size: 16,
-                      )
-                    ]),
+                    child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          Text(
+                            'Income',
+                            style: TextStyle(
+                              fontSize: 10.0,
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_upward,
+                            size: 16,
+                          )
+                        ]),
                   )
                 : Container(
                     decoration: BoxDecoration(
                       color: Colors.red,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(4.0),
-                        bottomLeft: Radius.circular(4.0),
-                      ),
+                      shape: BoxShape.circle,
+                      // borderRadius: BorderRadius.only(
+                      //   topLeft: Radius.circular(4.0),
+                      //   bottomLeft: Radius.circular(4.0),
+                      // ),
                     ),
-                    padding: EdgeInsets.all(8),
-                    child: Column(children: <Widget>[
-                      Text(
-                        'Expense',
-                        style: TextStyle(
-                          fontSize: 10.0,
+                    margin: EdgeInsets.all(2.0),
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Text(
+                          'Income',
+                          style: TextStyle(
+                            fontSize: 10.0,
+                          ),
                         ),
-                      ),
-                      Icon(
-                        Icons.arrow_downward,
-                        size: 16,
-                      ),
-                    ]),
+                        Icon(
+                          Icons.arrow_downward,
+                          size: 16,
+                        )
+                      ],
+                    ),
                   ),
             title: Padding(
               padding: EdgeInsets.all(8),
@@ -110,6 +123,7 @@ class TransactionListItem extends StatelessWidget {
                 ],
               ),
             ),
+            subtitle: showTimeStamp ? Text('testing') : Container(),
             trailing: Container(
               width: MediaQuery.of(context).size.width / 2.0,
               padding: const EdgeInsets.all(8.0),

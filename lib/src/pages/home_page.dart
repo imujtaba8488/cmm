@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../components/add_transaction_sheet.dart';
-import '../components/transactions_list.dart';
-import '../providers/app_provider.dart';
+import '../components/add_transaction_form.dart';
 import '../components/bottom_nav_bar.dart';
+import '../components/transactions_list.dart';
 import '../country_currency_chooser/currency_chooser_dialog.dart';
+import '../providers/app_provider.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -76,9 +76,18 @@ class _HomepageState extends State<Homepage> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () => showBottomSheet(
+        onPressed: () => showModalBottomSheet(
+          isScrollControlled: true,
+          enableDrag: true,
+          backgroundColor: Theme.of(context).backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.0),
+              topRight: Radius.circular(15.0),
+            ),
+          ),
           context: context,
-          builder: (context) => AddTransactionSheet(),
+          builder: (context) => AddTransactionForm(),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

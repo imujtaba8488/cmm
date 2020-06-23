@@ -164,6 +164,7 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
   Widget _customizedDateSelector() {
     return Container(
       margin: EdgeInsets.all(5.0),
+      padding: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         border: isEditingEnabled
             ? Border.all(color: Colors.white, width: 0.3)
