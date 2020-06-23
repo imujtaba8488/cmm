@@ -75,8 +75,11 @@ class _HomepageState extends State<Homepage> {
         shape: RoundedRectangleBorder(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showAddTransactionSheet(context),
         child: Icon(Icons.add),
+        onPressed: () => showBottomSheet(
+          context: context,
+          builder: (context) => AddTransactionSheet(),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Colors.white,

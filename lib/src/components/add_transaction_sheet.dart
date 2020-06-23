@@ -4,21 +4,21 @@ import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
 
-void showAddTransactionSheet(BuildContext context) {
-  showBottomSheet(
-    context: context,
-    builder: (context) {
-      return _AddTransactionSheet();
-    },
-  );
-}
+// void showAddTransactionSheet(BuildContext context) {
+//   showBottomSheet(
+//     context: context,
+//     builder: (context) {
+//       return _AddTransactionSheet();
+//     },
+//   );
+// }
 
-class _AddTransactionSheet extends StatefulWidget {
+class AddTransactionSheet extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _AddTransactionSheetState();
 }
 
-class _AddTransactionSheetState extends State<_AddTransactionSheet> {
+class _AddTransactionSheetState extends State<AddTransactionSheet> {
   AppProvider _appProvider;
   TextEditingController _amountEditingController, _descriptionEditingController;
   double _amountFieldWidth, _descriptionFieldWidth, optionButtonWidth;
