@@ -48,6 +48,11 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteTransaction(Transaction transaction) {
+    account.deleteTransaction(transaction);
+    notifyListeners();
+  }
+
   set currency(String value) {
     _currency = value;
     notifyListeners();

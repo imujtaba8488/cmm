@@ -44,6 +44,20 @@ class Account {
     }
   }
 
+  void deleteTransaction(Transaction transaction) {
+    for (int index = 0; index < transactions.length; index++) {
+      if (transactions[index].id == transaction.id) {
+        // Update balance.
+        transaction.type == TransactionType.income
+            ? _balance -= transaction.amount
+            : _balance += transaction.amount;
+
+        // Remove transaction.
+        transactions.removeAt(index);
+      }
+    }
+  }
+
   double get balance => _balance;
 
   double get totalIncome {
@@ -68,16 +82,6 @@ class Account {
     });
 
     return tExpense;
-  }
-
-  void deleteTransaction(int id) {
-    if (id > 0) {
-      for (int i = 0; i < transactions.length; i++) {
-        if (transactions[i].id == id) {
-          transactions.removeAt(i);
-        }
-      }
-    }
   }
 
   List<Transaction> get sortedTransactions {

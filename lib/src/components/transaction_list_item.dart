@@ -5,7 +5,7 @@ import '../components/transaction_details_dialog.dart';
 import '../models/transaction.dart';
 import '../providers/app_provider.dart';
 
-class TransactionListItem extends StatelessWidget {
+class TransactionListItem extends StatefulWidget {
   final Transaction transaction;
   final bool showTitles;
 
@@ -15,55 +15,66 @@ class TransactionListItem extends StatelessWidget {
   });
 
   @override
+  _TransactionListItemState createState() => _TransactionListItemState();
+}
+
+class _TransactionListItemState extends State<TransactionListItem> {
+  @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => showDialog(
-        context: context,
-        builder: (context) => TransactionDetailsDialog(transaction),
-      ),
-      child: Consumer<AppProvider>(builder: (context, appProvider, child) {
-        return Container(
-          height: MediaQuery.of(context).size.height / 12,
-          width: MediaQuery.of(context).size.width,
-          margin: EdgeInsets.all(5.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.blueGrey,
-                blurRadius: 1,
-                // offset: Offset(1, 1),
-              )
-            ],
-            borderRadius: BorderRadius.circular(5.0),
+    return Consumer<AppProvider>(builder: (context, appProvider, child) {
+      return Dismissible(
+        key: Key('${widget.transaction.id}'),
+        direction: DismissDirection.startToEnd,
+        onDismissed: (direction) =>
+            appProvider.deleteTransaction(widget.transaction),
+        child: InkWell(
+          onTap: () => showDialog(
+            context: context,
+            builder: (context) => TransactionDetailsDialog(widget.transaction),
           ),
-          child: Row(
-            children: <Widget>[
-              transaction.type == TransactionType.income
-                  ? _indicator(
-                      'Income',
-                      context,
-                      icon: Icon(Icons.arrow_upward),
-                    )
-                  : _indicator(
-                      'Expense',
-                      context,
-                      icon: Icon(Icons.arrow_downward),
-                      backgroundColor: Colors.red,
-                    ),
-              Expanded(
-                child: _amount(appProvider, context),
-              ),
-              SizedBox(width: 10.0),
-              Expanded(
-                flex: 2,
-                child: _description(appProvider),
-              ),
-            ],
+          child: Container(
+            height: MediaQuery.of(context).size.height / 12,
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.all(5.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.blueGrey,
+                  blurRadius: 1,
+                  // offset: Offset(1, 1),
+                )
+              ],
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: Row(
+              children: <Widget>[
+                widget.transaction.type == TransactionType.income
+                    ? _indicator(
+                        'Income',
+                        context,
+                        icon: Icon(Icons.arrow_upward),
+                      )
+                    : _indicator(
+                        'Expense',
+                        context,
+                        icon: Icon(Icons.arrow_downward),
+                        backgroundColor: Colors.red,
+                      ),
+                Expanded(
+                  child: _amount(appProvider, context),
+                ),
+                SizedBox(width: 10.0),
+                Expanded(
+                  flex: 2,
+                  child: _description(appProvider),
+                ),
+              ],
+            ),
           ),
-        );
-      }),
-    );
+        ),
+      );
+    });
   }
 
   Widget _amount(AppProvider appProvider, BuildContext context) {
@@ -73,7 +84,7 @@ class TransactionListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          showTitles
+          widget.showTitles
               ? Text(
                   'Amount',
                   style: TextStyle(
@@ -89,7 +100,7 @@ class TransactionListItem extends StatelessWidget {
                 Text(
                   '${appProvider.currency}',
                   style: TextStyle(
-                    color: transaction.type == TransactionType.income
+                    color: widget.transaction.type == TransactionType.income
                         ? Colors.blue
                         : Colors.red,
                     fontSize: 9.0,
@@ -102,9 +113,10 @@ class TransactionListItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          '${transaction.amount}',
+                          '${widget.transaction.amount}',
                           style: TextStyle(
-                            color: transaction.type == TransactionType.income
+                            color: widget.transaction.type ==
+                                    TransactionType.income
                                 ? Colors.blue
                                 : Colors.red,
                           ),
@@ -128,7 +140,7 @@ class TransactionListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          showTitles
+          widget.showTitles
               ? Text(
                   'Description',
                   style: TextStyle(
@@ -137,10 +149,10 @@ class TransactionListItem extends StatelessWidget {
                   ),
                 )
               : Container(),
-          showTitles
+          widget.showTitles
               ? Expanded(
                   child: Text(
-                    '${transaction.description}',
+                    '${widget.transaction.description}',
                     style: TextStyle(
                       color: Colors.blueGrey,
                       fontSize: 12,
@@ -148,7 +160,7 @@ class TransactionListItem extends StatelessWidget {
                   ),
                 )
               : Text(
-                  '${transaction.description}',
+                  '${widget.transaction.description}',
                   style: TextStyle(
                     color: Colors.blueGrey,
                     fontSize: 12,
