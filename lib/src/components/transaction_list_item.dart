@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../components/transaction_details_dialog.dart';
 import '../models/transaction.dart';
 import '../providers/app_provider.dart';
+import '../components/confirm_delete_transaction_alert.dart';
 
 class TransactionListItem extends StatefulWidget {
   final Transaction transaction;
@@ -25,6 +26,12 @@ class _TransactionListItemState extends State<TransactionListItem> {
       return Dismissible(
         key: Key('${widget.transaction.id}'),
         direction: DismissDirection.startToEnd,
+        confirmDismiss: (direction) {
+          return showDialog(
+            context: context,
+            builder: (context) => DeleteTransactionDialog(),
+          );
+        },
         onDismissed: (direction) =>
             appProvider.deleteTransaction(widget.transaction),
         child: InkWell(
