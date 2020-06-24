@@ -11,7 +11,7 @@ class TransactionListItem extends StatelessWidget {
 
   TransactionListItem({
     @required this.transaction,
-    this.showTitles = false,
+    this.showTitles = true,
   });
 
   @override
@@ -23,7 +23,7 @@ class TransactionListItem extends StatelessWidget {
       ),
       child: Consumer<AppProvider>(builder: (context, appProvider, child) {
         return Container(
-          height: MediaQuery.of(context).size.height / 14,
+          height: MediaQuery.of(context).size.height / 12,
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.all(5.0),
           decoration: BoxDecoration(
@@ -153,6 +153,8 @@ class TransactionListItem extends StatelessWidget {
                     color: Colors.blueGrey,
                     fontSize: 12,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
         ],
       ),

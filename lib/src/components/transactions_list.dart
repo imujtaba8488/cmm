@@ -5,6 +5,7 @@ import '../components/transaction_list_bar.dart';
 import '../components/transaction_list_item.dart';
 import '../providers/app_provider.dart';
 import '../util/util';
+import '../components/add_transaction_prompt.dart';
 
 class Transactionslist extends StatefulWidget {
   @override
@@ -37,27 +38,7 @@ class _TransactionslistState extends State<Transactionslist> {
                             itemBuilder: buildList,
                             itemCount: appProvider.account.transactions.length,
                           )
-                        : Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  'No Transactions!',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  'Press the \'+\' button to add a transaction.',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        : AddTransactionPrompt(),
               ),
             ],
           ),
