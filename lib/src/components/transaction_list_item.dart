@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/transaction.dart';
 import '../components/transaction_details_dialog.dart';
+import '../models/transaction.dart';
 import '../providers/app_provider.dart';
 
 class TransactionListItem extends StatelessWidget {
   final Transaction transaction;
-  final bool showTimeStamp;
+  final bool showTitles;
 
   TransactionListItem({
     @required this.transaction,
-    this.showTimeStamp = false,
+    this.showTitles = false,
   });
 
   @override
@@ -19,96 +19,88 @@ class TransactionListItem extends StatelessWidget {
     return InkWell(
       onTap: () => showDialog(
         context: context,
-        builder: (context) {
-          return TransactionDetailsDialog(transaction);
-        },
+        builder: (context) => TransactionDetailsDialog(transaction),
       ),
-      child: Dismissible(
-        key: Key('${transaction.id}'),
-        child: Card(
-          elevation: 10,
-          child: ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: transaction.type == TransactionType.income
-                ? Container(
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                      // borderRadius: BorderRadius.only(
-                      //   topLeft: Radius.circular(4.0),
-                      //   bottomLeft: Radius.circular(4.0),
-                      // ),
+      child: Consumer<AppProvider>(builder: (context, appProvider, child) {
+        return Container(
+          height: MediaQuery.of(context).size.height / 14,
+          width: MediaQuery.of(context).size.width,
+          margin: EdgeInsets.all(5.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blueGrey,
+                blurRadius: 1,
+                // offset: Offset(1, 1),
+              )
+            ],
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          child: Row(
+            children: <Widget>[
+              transaction.type == TransactionType.income
+                  ? _indicator(
+                      'Income',
+                      context,
+                      icon: Icon(Icons.arrow_upward),
+                    )
+                  : _indicator(
+                      'Expense',
+                      context,
+                      icon: Icon(Icons.arrow_downward),
+                      backgroundColor: Colors.red,
                     ),
-                    margin: EdgeInsets.all(2.0),
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Text(
-                            'Income',
-                            style: TextStyle(
-                              fontSize: 10.0,
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_upward,
-                            size: 16,
-                          )
-                        ]),
-                  )
-                : Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                      // borderRadius: BorderRadius.only(
-                      //   topLeft: Radius.circular(4.0),
-                      //   bottomLeft: Radius.circular(4.0),
-                      // ),
-                    ),
-                    margin: EdgeInsets.all(2.0),
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Text(
-                          'Income',
-                          style: TextStyle(
-                            fontSize: 10.0,
-                          ),
-                        ),
-                        Icon(
-                          Icons.arrow_downward,
-                          size: 16,
-                        )
-                      ],
-                    ),
+              Expanded(
+                child: _amount(appProvider, context),
+              ),
+              SizedBox(width: 10.0),
+              Expanded(
+                flex: 2,
+                child: _description(appProvider),
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _amount(AppProvider appProvider, BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(5.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          showTitles
+              ? Text(
+                  'Amount',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 8,
                   ),
-            title: Padding(
-              padding: EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Amount',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.grey,
-                    ),
+                )
+              : Container(),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  '${appProvider.currency}',
+                  style: TextStyle(
+                    color: transaction.type == TransactionType.income
+                        ? Colors.blue
+                        : Colors.red,
+                    fontSize: 9.0,
                   ),
-                  FittedBox(child: Consumer<AppProvider>(
-                      builder: (context, appProvider, child) {
-                    return Row(
+                ),
+                SizedBox(width: 5.0),
+                Expanded(
+                  child: FittedBox(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          '${appProvider.currency}',
-                          style: TextStyle(
-                            color: transaction.type == TransactionType.income
-                                ? Colors.blue
-                                : Colors.red,
-                            fontSize: 10.0,
-                          ),
-                        ),
-                        SizedBox(width: 5.0),
                         Text(
                           '${transaction.amount}',
                           style: TextStyle(
@@ -118,28 +110,78 @@ class TransactionListItem extends StatelessWidget {
                           ),
                         ),
                       ],
-                    );
-                  })),
-                ],
-              ),
-            ),
-            subtitle: showTimeStamp ? Text('testing') : Container(),
-            trailing: Container(
-              width: MediaQuery.of(context).size.width / 2.0,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                transaction.description,
-                style: TextStyle(
-                  color: Colors.blueGrey,
-                  fontSize: 12,
-                  fontFamily: 'Saira',
+                    ),
+                  ),
                 ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
+              ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _description(AppProvider appProvider) {
+    return Container(
+      padding: const EdgeInsets.all(5.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          showTitles
+              ? Text(
+                  'Description',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 8,
+                  ),
+                )
+              : Container(),
+          showTitles
+              ? Expanded(
+                  child: Text(
+                    '${transaction.description}',
+                    style: TextStyle(
+                      color: Colors.blueGrey,
+                      fontSize: 12,
+                    ),
+                  ),
+                )
+              : Text(
+                  '${transaction.description}',
+                  style: TextStyle(
+                    color: Colors.blueGrey,
+                    fontSize: 12,
+                  ),
+                ),
+        ],
+      ),
+    );
+  }
+
+  Widget _indicator(
+    String label,
+    BuildContext context, {
+    Icon icon,
+    Color backgroundColor = Colors.blue,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(5.0),
+      width: MediaQuery.of(context).size.width / 10,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(5.0),
+          bottomLeft: Radius.circular(5.0),
         ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          FittedBox(child: Text(label)),
+          icon != null ? icon : Container(),
+        ],
       ),
     );
   }
