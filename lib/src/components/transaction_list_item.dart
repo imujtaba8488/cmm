@@ -6,38 +6,40 @@ import '../models/transaction.dart';
 import '../providers/app_provider.dart';
 import '../components/confirm_delete_transaction_alert.dart';
 
-class TransactionListItem extends StatefulWidget {
+class TransactionListItem extends StatelessWidget {
   final Transaction transaction;
   final bool showTitles;
+  final Function notifyTransactionDeleted;
 
   TransactionListItem({
     @required this.transaction,
     this.showTitles = true,
+    this.notifyTransactionDeleted,
   });
 
-  @override
-  _TransactionListItemState createState() => _TransactionListItemState();
-}
-
-class _TransactionListItemState extends State<TransactionListItem> {
   @override
   Widget build(BuildContext context) {
     return Consumer<AppProvider>(builder: (context, appProvider, child) {
       return Dismissible(
-        key: Key('${widget.transaction.id}'),
-        direction: DismissDirection.startToEnd,
+        key: Key('${transaction.id}'),
         confirmDismiss: (direction) {
           return showDialog(
             context: context,
             builder: (context) => DeleteTransactionDialog(),
           );
         },
-        onDismissed: (direction) =>
-            appProvider.deleteTransaction(widget.transaction),
+        onDismissed: (direction) {
+          appProvider.deleteTransaction(transaction);
+
+          if (notifyTransactionDeleted != null) {
+            notifyTransactionDeleted(transaction);
+          }
+        },
+            
         child: InkWell(
           onTap: () => showDialog(
             context: context,
-            builder: (context) => TransactionDetailsDialog(widget.transaction),
+            builder: (context) => TransactionDetailsDialog(transaction),
           ),
           child: Container(
             height: MediaQuery.of(context).size.height / 12,
@@ -56,7 +58,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
             ),
             child: Row(
               children: <Widget>[
-                widget.transaction.type == TransactionType.income
+                transaction.type == TransactionType.income
                     ? _indicator(
                         'Income',
                         context,
@@ -91,7 +93,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          widget.showTitles
+          showTitles
               ? Text(
                   'Amount',
                   style: TextStyle(
@@ -107,7 +109,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
                 Text(
                   '${appProvider.currency}',
                   style: TextStyle(
-                    color: widget.transaction.type == TransactionType.income
+                    color: transaction.type == TransactionType.income
                         ? Colors.blue
                         : Colors.red,
                     fontSize: 9.0,
@@ -120,9 +122,9 @@ class _TransactionListItemState extends State<TransactionListItem> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          '${widget.transaction.amount}',
+                          '${transaction.amount}',
                           style: TextStyle(
-                            color: widget.transaction.type ==
+                            color: transaction.type ==
                                     TransactionType.income
                                 ? Colors.blue
                                 : Colors.red,
@@ -147,7 +149,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          widget.showTitles
+          showTitles
               ? Text(
                   'Description',
                   style: TextStyle(
@@ -156,10 +158,10 @@ class _TransactionListItemState extends State<TransactionListItem> {
                   ),
                 )
               : Container(),
-          widget.showTitles
+          showTitles
               ? Expanded(
                   child: Text(
-                    '${widget.transaction.description}',
+                    '${transaction.description}',
                     style: TextStyle(
                       color: Colors.blueGrey,
                       fontSize: 12,
@@ -167,7 +169,7 @@ class _TransactionListItemState extends State<TransactionListItem> {
                   ),
                 )
               : Text(
-                  '${widget.transaction.description}',
+                  '${transaction.description}',
                   style: TextStyle(
                     color: Colors.blueGrey,
                     fontSize: 12,

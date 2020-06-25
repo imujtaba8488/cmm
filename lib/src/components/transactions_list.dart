@@ -6,6 +6,7 @@ import '../components/transaction_list_item.dart';
 import '../providers/app_provider.dart';
 import '../util/util';
 import '../components/add_transaction_prompt.dart';
+import '../models/transaction.dart';
 
 class Transactionslist extends StatefulWidget {
   @override
@@ -56,9 +57,23 @@ class _TransactionslistState extends State<Transactionslist> {
         )
             ? TransactionListItem(
                 transaction: appProvider.account.sortedTransactions[index],
+                notifyTransactionDeleted: _onItemDeleted,
               )
             : Container();
       },
+    );
+  }
+
+  void _onItemDeleted(Transaction transaction) {
+    AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
+
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${transaction.type == TransactionType.income ? 'Income' : 'Expense'} transaction of amount ${appProvider.currency} ${transaction.amount} deleted',
+        ),
+        duration: Duration(milliseconds: 1500),
+      ),
     );
   }
 }

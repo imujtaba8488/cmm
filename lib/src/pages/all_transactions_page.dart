@@ -7,6 +7,7 @@ import '../components/transaction_list_item.dart';
 import '../providers/app_provider.dart';
 import '../util/util';
 import '../components/add_transaction_prompt.dart';
+import '../models/transaction.dart';
 
 class AllTransactionsPage extends StatefulWidget {
   @override
@@ -14,9 +15,12 @@ class AllTransactionsPage extends StatefulWidget {
 }
 
 class _AllTransactionsPageState extends State<AllTransactionsPage> {
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       // backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: Text('All Transactions'),
@@ -71,6 +75,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                     : _dateSeperator(index, appProvider),
             TransactionListItem(
               transaction: appProvider.account.sortedTransactions[index],
+              notifyTransactionDeleted: _onItemDeleted,
             )
           ],
         );
@@ -103,6 +108,19 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _onItemDeleted(Transaction transaction) {
+    AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
+
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        content: Text(
+          '${transaction.type == TransactionType.income ? 'Income' : 'Expense'} transaction of amount ${appProvider.currency} ${transaction.amount} deleted',
+        ),
+        duration: Duration(milliseconds: 1500),
       ),
     );
   }

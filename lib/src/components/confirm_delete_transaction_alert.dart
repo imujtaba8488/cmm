@@ -9,7 +9,7 @@ class DeleteTransactionDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: Container(
-        height: MediaQuery.of(context).size.height / 5.5,
+        height: MediaQuery.of(context).size.height / 4.5,
         padding: EdgeInsets.all(5.0),
         decoration: BoxDecoration(
           border: Border.all(
@@ -22,7 +22,37 @@ class DeleteTransactionDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text('Are you sure?'),
+            Container(
+              margin: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.grey,
+                    width: 0.3,
+                  ),
+                ),
+              ),
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    'Are you sure?',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                'Warning: Transaction once deleted cannot be retrieved!',
+                style: TextStyle(
+                  color: Colors.red[500],
+                ),
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -36,7 +66,7 @@ class DeleteTransactionDialog extends StatelessWidget {
                   ),
                   borderSide: BorderSide(color: Colors.white),
                   child: Text(
-                    'No',
+                    'Cancel',
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -53,7 +83,7 @@ class DeleteTransactionDialog extends StatelessWidget {
                   ),
                   borderSide: BorderSide(color: Colors.white),
                   child: Text(
-                    'Yes',
+                    'Delete',
                     style: TextStyle(
                       color: Colors.white,
                     ),
