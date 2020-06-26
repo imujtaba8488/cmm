@@ -17,11 +17,18 @@ class AllTransactionsPage extends StatefulWidget {
 class _AllTransactionsPageState extends State<AllTransactionsPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
+  String searchValue;
+
+  @override
+  void initState() {
+    super.initState();
+    searchValue = '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      // backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: Text('All Transactions'),
       ),
@@ -44,12 +51,21 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
       body: Consumer<AppProvider>(
         builder: (context, appProvider, child) {
           return appProvider.account.sortedTransactions.length > 0
-              ? Container(
-                  margin: const EdgeInsets.all(1.0),
-                  child: ListView.builder(
-                    itemBuilder: _buildList,
-                    itemCount: appProvider.account.transactions.length,
-                  ),
+              ? Column(
+                  children: <Widget>[
+                    _searchTextField(),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.all(1.0),
+                        child: ListView.builder(
+                          itemBuilder: _buildList,
+                          itemCount: appProvider
+                              .searchedTransactions(searchValue)
+                              .length,
+                        ),
+                      ),
+                    )
+                  ],
                 )
               : AddTransactionPrompt();
         },
@@ -61,6 +77,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
     // ! *** MUJTABA, WELL DONE! ***
     // * Requirement: Group List as per the transaction date.
     // ! Solution: Cleverly done! If index is 0, the first date is displayed. If index is greater than 0, than the date at the current index is compared with (index - 1) and if similar a Container is displayed and if not, the date separator is displayed, hence, grouping the transactions as per the transaction date.
+
     return Consumer<AppProvider>(
       builder: (context, appProvider, child) {
         return Column(
@@ -69,12 +86,16 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
             index == 0
                 ? _dateSeperator(index, appProvider)
                 : areDatesEqual(
-                        appProvider.account.sortedTransactions[index].date,
-                        appProvider.account.sortedTransactions[index - 1].date)
+                        appProvider
+                            .searchedTransactions(searchValue)[index]
+                            .date,
+                        appProvider
+                            .searchedTransactions(searchValue)[index - 1]
+                            .date)
                     ? Container()
                     : _dateSeperator(index, appProvider),
             TransactionListItem(
-              transaction: appProvider.account.sortedTransactions[index],
+              transaction: appProvider.searchedTransactions(searchValue)[index],
               notifyTransactionDeleted: _onItemDeleted,
             )
           ],
@@ -101,7 +122,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
         children: <Widget>[
           Text(
             // '${DateFormat('dd-MM-yy').format(appProvider.account.sortedTransactions[index].date)}',
-            '${df.format(appProvider.account.sortedTransactions[index].date)}',
+            '${df.format(appProvider.searchedTransactions(searchValue)[index].date)}',
             style: TextStyle(
               color: Colors.blue,
               fontSize: 12,
@@ -124,4 +145,56 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
       ),
     );
   }
+
+  Widget _searchTextField() {
+    return Container(
+      padding: EdgeInsets.all(5.0),
+      margin: EdgeInsets.all(1.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).backgroundColor,
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.search, color: Colors.white),
+          labelText: 'Search Transaction by amount or description.',
+          labelStyle: TextStyle(
+            color: Colors.green,
+          ),
+        ),
+        onChanged: (value) {
+          // Initially the searchValue is set to '' (blank), hence all the transactions are displayed. When something is typed in the searchTransaction the searchValue is updated accordingly.
+
+          setState(() {
+            searchValue = value;
+          });
+        },
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
 }
+
+//! The problem with the below code for search transaction was that it didn't update any changes to the if made to the searchedTransactions. Hence, had to introduce the searchedTransaction(searchValue) in the AppProvider.
+// return Consumer<AppProvider>(
+//   builder: (context, appProvider, child) {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: <Widget>[
+//         index == 0
+//             ? _dateSeperator(index, appProvider)
+//             : areDatesEqual(
+//                     appProvider.account.sortedTransactions[index].date,
+//                     appProvider.account.sortedTransactions[index - 1].date)
+//                 ? Container()
+//                 : _dateSeperator(index, appProvider),
+// TransactionListItem(
+//   transaction: appProvider.account.sortedTransactions[index],
+//   notifyTransactionDeleted: _onItemDeleted,
+// )
+//         TransactionListItem(
+//           transaction: allTransactions[index],
+//           notifyTransactionDeleted: _onItemDeleted,
+//         )
+//       ],
+//     );
+//   },

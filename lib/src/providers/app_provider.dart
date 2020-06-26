@@ -59,4 +59,26 @@ class AppProvider extends ChangeNotifier {
   }
 
   String get currency => _currency;
+
+  /// Returns the list of transactions matching the searchValue with can either be the transaction amount or transaction description.
+  List<Transaction> searchedTransactions(String searchValue) {
+    List<Transaction> searchedTransactions = [];
+
+    // If the searchValue is empty searchTransactions contains all transactions, otherwise it contains the transactions matching the searchValue. Remember, however, that any changes to the searched transactions are also applied to all transactions, since, search transactions only returns a filtered copy of all transactions.
+
+    if (searchValue.trim().isEmpty) {
+      searchedTransactions = account.sortedTransactions;
+    } else {
+      // Search for either the transaction amount or by description.
+      searchedTransactions = account.sortedTransactions.where((transaction) {
+        return transaction.amount.toString().startsWith(searchValue.trim()) ||
+            transaction.description.startsWith(searchValue.trim()) ||
+            transaction.description
+                .toLowerCase()
+                .startsWith(searchValue.trim());
+      }).toList();
+    }
+
+    return searchedTransactions;
+  }
 }
