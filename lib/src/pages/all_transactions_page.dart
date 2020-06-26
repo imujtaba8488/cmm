@@ -53,19 +53,34 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
         builder: (context, appProvider, child) {
           return appProvider.account.sortedTransactions.length > 0
               ? Column(
+                  mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    _searchTextField(),
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.all(1.0),
-                        child: ListView.builder(
-                          itemBuilder: _buildList,
-                          itemCount: appProvider
-                              .searchedTransactions(_searchValue)
-                              .length,
-                        ),
-                      ),
-                    )
+                    _searchField(),
+
+                    // Display a list of transactions matching the searchValue, otherwise display 'No Transaction matching' information.
+                    appProvider.account
+                                .searchedTransactions(_searchValue)
+                                .length >
+                            0
+                        ? Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.all(1.0),
+                              child: ListView.builder(
+                                itemBuilder: _buildList,
+                                itemCount: appProvider.account
+                                    .searchedTransactions(_searchValue)
+                                    .length,
+                              ),
+                            ),
+                          )
+                        : Expanded(
+                            child: Center(
+                              child: Text(
+                                'No Transactions match the search criteria.',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                          )
                   ],
                 )
               : AddTransactionPrompt();
@@ -87,17 +102,17 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
             index == 0
                 ? _dateSeperator(index, appProvider)
                 : areDatesEqual(
-                        appProvider
+                        appProvider.account
                             .searchedTransactions(_searchValue)[index]
                             .date,
-                        appProvider
+                        appProvider.account
                             .searchedTransactions(_searchValue)[index - 1]
                             .date)
                     ? Container()
                     : _dateSeperator(index, appProvider),
             TransactionListItem(
               transaction:
-                  appProvider.searchedTransactions(_searchValue)[index],
+                  appProvider.account.searchedTransactions(_searchValue)[index],
               notifyTransactionDeleted: _onItemDeleted,
             )
           ],
@@ -124,7 +139,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
         children: <Widget>[
           Text(
             // '${DateFormat('dd-MM-yy').format(appProvider.account.sortedTransactions[index].date)}',
-            '${df.format(appProvider.searchedTransactions(_searchValue)[index].date)}',
+            '${df.format(appProvider.account.searchedTransactions(_searchValue)[index].date)}',
             style: TextStyle(
               color: Colors.blue,
               fontSize: 12,
@@ -148,7 +163,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
     );
   }
 
-  Widget _searchTextField() {
+  Widget _searchField() {
     return Container(
       padding: EdgeInsets.all(5.0),
       margin: EdgeInsets.all(1.0),

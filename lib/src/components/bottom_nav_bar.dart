@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../pages/all_transactions_page.dart';
+import '../pages/settings_page.dart';
 
 class BottomNavBar extends StatelessWidget {
   @override
@@ -18,19 +19,24 @@ class BottomNavBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            _item(context,
-                icon: Icon(Icons.settings),
-                label: 'Settings',
-                onPressed: () {}),
-            _item(context, icon: Icon(Icons.search), label: 'Transactions',
-                onPressed: () {
-              Navigator.push(
+            _item(
+              context,
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+              onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AllTransactionsPage(),
+                  builder: (context) => SettingsPage(),
                 ),
-              );
-            }),
+              ),
+            ),
+            _item(
+              context,
+              icon: Icon(Icons.access_alarm),
+              label: 'Profile',
+            ),
+
+            // Do not display an item in the center below the FAB.
             _item(
               context,
               icon: null,
@@ -40,11 +46,16 @@ class BottomNavBar extends StatelessWidget {
               icon: Icon(Icons.change_history),
               label: 'Charts',
             ),
-            _item(
-              context,
-              icon: Icon(Icons.access_alarm),
-              label: 'Profile',
-            ),
+
+            _item(context, icon: Icon(Icons.search), label: 'Transactions',
+                onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AllTransactionsPage(),
+                ),
+              );
+            }),
           ],
         ),
       ),
