@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
 import '../country_currency_chooser/currency_chooser_dialog.dart';
+import '../components/set_low_balance_threshold_dialog.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -37,6 +38,8 @@ class _SettingsPageState extends State<SettingsPage> {
             Divider(color: Colors.grey),
             _curreny(),
             Divider(color: Colors.grey),
+            _lowOnBalanceWarning(),
+            Divider(color: Colors.grey),
             _help(),
             Divider(color: Colors.grey),
             _credits(),
@@ -61,6 +64,12 @@ class _SettingsPageState extends State<SettingsPage> {
         'Change the App Theme.',
         style: TextStyle(
           color: Colors.grey,
+        ),
+      ),
+      trailing: Text(
+        'DarkWhite',
+        style: TextStyle(
+          color: Colors.green,
         ),
       ),
     );
@@ -161,6 +170,51 @@ class _SettingsPageState extends State<SettingsPage> {
         'Make your contribution to support this app.',
         style: TextStyle(
           color: Colors.grey,
+        ),
+      ),
+    );
+  }
+
+  Widget _lowOnBalanceWarning() {
+    return InkWell(
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) => SetLowBalanceThresholdDialog(),
+      ),
+      child: ListTile(
+        title: Text(
+          'Low Balance Threshold',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        subtitle: Text(
+          'Show warning when low on balance.',
+          style: TextStyle(
+            color: Colors.grey,
+          ),
+        ),
+        trailing: Consumer<AppProvider>(
+          builder: (context, value, child) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  '${appProvider.currency} ',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 10,
+                  ),
+                ),
+                Text(
+                  '${appProvider.lowBalanceThreshold}',
+                  style: TextStyle(
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

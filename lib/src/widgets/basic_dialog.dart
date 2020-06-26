@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class BasicDialog extends StatelessWidget {
   final Widget child;
+  final double height;
 
-  BasicDialog({this.child});
+  BasicDialog({this.child, this.height});
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -12,7 +13,7 @@ class BasicDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: Container(
-        height: MediaQuery.of(context).size.height / 2.5,
+        height: height ,
         padding: EdgeInsets.all(5.0),
         decoration: BoxDecoration(
           border: Border.all(

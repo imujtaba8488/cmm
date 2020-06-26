@@ -6,6 +6,7 @@ import '../models/transaction.dart';
 class AppProvider extends ChangeNotifier {
   final Account account = Account();
   String _currency = 'USD';
+  double _lowBalanceThreshold = 0.0;
 
   static int transactionId = 0;
 
@@ -59,4 +60,11 @@ class AppProvider extends ChangeNotifier {
   }
 
   String get currency => _currency;
+
+  set lowBalanceThreshold(double value) {
+    _lowBalanceThreshold = value;
+    notifyListeners();
+  }
+
+  double get lowBalanceThreshold => _lowBalanceThreshold;
 }

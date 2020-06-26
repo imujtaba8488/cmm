@@ -44,7 +44,7 @@ class BottomNavBar extends StatelessWidget {
             _item(
               context,
               icon: Icon(Icons.change_history),
-              label: 'Charts',
+              label: 'Analysis',
             ),
 
             _item(context, icon: Icon(Icons.search), label: 'Transactions',

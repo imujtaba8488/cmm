@@ -127,7 +127,7 @@ class _HomepageState extends State<Homepage> {
                   _totalIncomeExpense(appProvider),
                 ],
               ),
-              appProvider.account.balance < 500
+              appProvider.account.balance < appProvider.lowBalanceThreshold
                   ? Container(
                       width: MediaQuery.of(context).size.width / 2.6,
                       child: FittedBox(
