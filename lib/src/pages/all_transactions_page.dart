@@ -16,13 +16,14 @@ class AllTransactionsPage extends StatefulWidget {
 
 class _AllTransactionsPageState extends State<AllTransactionsPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-
-  String searchValue;
+  TextEditingController _searchFieldController;
+  String _searchValue;
 
   @override
   void initState() {
     super.initState();
-    searchValue = '';
+    _searchFieldController = TextEditingController();
+    _searchValue = '';
   }
 
   @override
@@ -60,7 +61,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                         child: ListView.builder(
                           itemBuilder: _buildList,
                           itemCount: appProvider
-                              .searchedTransactions(searchValue)
+                              .searchedTransactions(_searchValue)
                               .length,
                         ),
                       ),
@@ -87,15 +88,16 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                 ? _dateSeperator(index, appProvider)
                 : areDatesEqual(
                         appProvider
-                            .searchedTransactions(searchValue)[index]
+                            .searchedTransactions(_searchValue)[index]
                             .date,
                         appProvider
-                            .searchedTransactions(searchValue)[index - 1]
+                            .searchedTransactions(_searchValue)[index - 1]
                             .date)
                     ? Container()
                     : _dateSeperator(index, appProvider),
             TransactionListItem(
-              transaction: appProvider.searchedTransactions(searchValue)[index],
+              transaction:
+                  appProvider.searchedTransactions(_searchValue)[index],
               notifyTransactionDeleted: _onItemDeleted,
             )
           ],
@@ -122,7 +124,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
         children: <Widget>[
           Text(
             // '${DateFormat('dd-MM-yy').format(appProvider.account.sortedTransactions[index].date)}',
-            '${df.format(appProvider.searchedTransactions(searchValue)[index].date)}',
+            '${df.format(appProvider.searchedTransactions(_searchValue)[index].date)}',
             style: TextStyle(
               color: Colors.blue,
               fontSize: 12,
@@ -160,15 +162,27 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
           labelStyle: TextStyle(
             color: Colors.green,
           ),
+          suffix: _searchFieldController.text.isNotEmpty
+              ? InkWell(
+                  child: Icon(Icons.clear),
+                  onTap: () {
+                    setState(() {
+                      _searchValue = '';
+                      _searchFieldController.clear();
+                    });
+                  },
+                )
+              : null,
         ),
         onChanged: (value) {
           // Initially the searchValue is set to '' (blank), hence all the transactions are displayed. When something is typed in the searchTransaction the searchValue is updated accordingly.
 
           setState(() {
-            searchValue = value;
+            _searchValue = value;
           });
         },
         style: TextStyle(color: Colors.white),
+        controller: _searchFieldController,
       ),
     );
   }
