@@ -21,6 +21,12 @@ class Account {
     }
   }
 
+  void addTransaction(Transaction transaction) {
+    transaction.type == TransactionType.income
+        ? addIncome(transaction)
+        : addExpense(transaction);
+  }
+
   void updateTransaction(Transaction original, Transaction replacement) {
     for (int index = 0; index < transactions.length; index++) {
       if (original.id == transactions[index].id) {

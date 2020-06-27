@@ -28,6 +28,7 @@ dependencies:
   custom_widgets:
     path: '/Users/imujtabanazki/flutter_projects/custom_widgets'
   intl: ^0.16.1
+  cloud_firestore: ^0.13.7
 
 
 dev_dependencies:

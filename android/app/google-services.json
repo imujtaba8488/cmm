@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "211682129114",
+    "firebase_url": "https://cmm1-ce04f.firebaseio.com",
+    "project_id": "cmm1-ce04f",
+    "storage_bucket": "cmm1-ce04f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211682129114:android:a4558e538acf7fe72361e3",
+        "android_client_info": {
+          "package_name": "com.imujtaba.cmm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211682129114-jv07psvqqd8d140oi03c9sqsbv979n5s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.imujtaba.cmm",
+            "certificate_hash": "f316619e4b40e0b5f0f5038ecffece37e1887282"
+          }
+        },
+        {
+          "client_id": "211682129114-6sl06l6ab5emm33fg0lgphupqd902qi6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCULLEJDVmlJcxVep6pnbQzs9mPlSqPjZo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211682129114-6sl06l6ab5emm33fg0lgphupqd902qi6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
