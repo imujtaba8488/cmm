@@ -38,7 +38,11 @@ class _SettingsPageState extends State<SettingsPage> {
             Divider(color: Colors.grey),
             _curreny(),
             Divider(color: Colors.grey),
-            _lowOnBalanceWarning(),
+            _lowBalanceThreshold(),
+            Divider(color: Colors.grey),
+            _backgroundSync(),
+            Divider(color: Colors.grey),
+            _clearAllData(),
             Divider(color: Colors.grey),
             _help(),
             Divider(color: Colors.grey),
@@ -175,7 +179,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _lowOnBalanceWarning() {
+  Widget _lowBalanceThreshold() {
     return InkWell(
       onTap: () => showDialog(
         context: context,
@@ -215,6 +219,61 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _backgroundSync() {
+    return InkWell(
+
+      child: ListTile(
+        title: Text(
+          'Background Sync',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        subtitle: Text(
+          'Synchronize data in the background.',
+          style: TextStyle(
+            color: Colors.grey,
+          ),
+        ),
+        trailing: Consumer<AppProvider>(
+          builder: (context, value, child) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  'Enabled',
+                  style: TextStyle(
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _clearAllData() {
+    return InkWell(
+
+      child: ListTile(
+        title: Text(
+          'Clear All Data',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        subtitle: Text(
+          'Deletes all the Data. Proceed with Caution.',
+          style: TextStyle(
+            color: Colors.grey,
+          ),
         ),
       ),
     );
