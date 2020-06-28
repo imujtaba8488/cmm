@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'transaction.dart' as app;
+import 'user.dart';
 
 /// A collection is represented by a user i.e. saved by username. Each collection contains documents i.e. transactions performed by the user.
 
@@ -8,7 +9,9 @@ class Cloud {
   final Firestore _firestore = Firestore.instance;
 
   Future<String> addTransaction(
-      String username, app.Transaction transaction) async {
+    String username,
+    app.Transaction transaction,
+  ) async {
     DocumentReference docReference =
         await _firestore.collection(username).add(transaction.asMap());
 
@@ -35,5 +38,24 @@ class Cloud {
     });
 
     return allTransactions;
+  }
+
+  Future<String> addUser(User user) async {
+    DocumentReference docReference =
+        await _firestore.collection('users').add(user.asMap());
+
+    return docReference.documentID;
+  }
+
+  Future<List<User>> getAllUsers() async {
+    List<User> allUsers = [];
+
+    var snapshot = await _firestore.collection('users').getDocuments();
+
+    snapshot.documents.forEach((document) {
+      allUsers.add(User.fromMap(document.data));
+    });
+
+    return allUsers;
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/basic_dialog.dart';
+import '../providers/app_provider.dart';
 
 class SignInSignUpDialog extends StatefulWidget {
   @override
@@ -11,6 +13,15 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
   GlobalKey<FormState> _signInFormKey = GlobalKey();
   GlobalKey<FormState> _signUpFormKey = GlobalKey();
   int activeTab = 0;
+
+  String firstName, lastName, email, password;
+
+  @override
+  void initState() {
+    super.initState();
+
+    firstName = lastName = email = password = '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +86,12 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: _customTextField(
-              label: 'Username',
+              label: 'Email',
               suffixIcon: Icon(
-                Icons.person,
+                Icons.email,
                 color: Colors.green,
               ),
+              onSaved: (value) => email = value,
             ),
           ),
           Padding(
@@ -90,6 +102,7 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
                 Icons.lock,
                 color: Colors.green,
               ),
+              onSaved: (value) => password = password,
             ),
           ),
           Padding(
@@ -108,7 +121,7 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
                       color: Colors.white,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: onSignIn,
                 ),
               ],
             ),
@@ -150,9 +163,9 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: _customTextField(
-              label: 'Username',
+              label: 'Email',
               suffixIcon: Icon(
-                Icons.person,
+                Icons.email,
                 color: Colors.green,
               ),
             ),
@@ -196,8 +209,9 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
   Widget _customTextField({
     String label = 'label',
     Icon suffixIcon,
+    Function onSaved,
   }) {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(
         suffixIcon: suffixIcon ?? null,
         labelText: label,
@@ -210,6 +224,26 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
         ),
       ),
       style: TextStyle(color: Colors.white),
+      onSaved: onSaved,
     );
   }
+
+  void onSignIn() async {
+    AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
+
+    if (_signInFormKey.currentState.validate()) {
+      _signInFormKey.currentState.save();
+
+      bool signedIn = await appProvider.signIn(email, password);
+
+      if (signedIn) {
+        
+        print('user exists signing in');
+
+        Navigator.pop(context);
+      }
+    }
+  }
+
+  void onSignUp() {}
 }

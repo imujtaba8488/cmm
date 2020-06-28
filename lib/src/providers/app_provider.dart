@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/account.dart';
 import '../models/cloud.dart';
 import '../models/transaction.dart';
+import '../models/user.dart';
 
 class AppProvider extends ChangeNotifier {
   final Account account;
@@ -10,8 +11,11 @@ class AppProvider extends ChangeNotifier {
   String _currency;
   double _lowBalanceThreshold;
   static int dummyID = 0;
+  User user;
 
-  AppProvider() : account = Account(), _cloud = Cloud() {
+  AppProvider()
+      : account = Account(),
+        _cloud = Cloud() {
     _currency = 'USD';
     _lowBalanceThreshold = 0.0;
 
@@ -19,16 +23,18 @@ class AppProvider extends ChangeNotifier {
   }
 
   void _loadData() async {
-    List<Transaction> cloudTransactions =
-        await _cloud.readAllTransaction('mujtaba');
+    if (user != null) {
+      List<Transaction> cloudTransactions =
+          await _cloud.readAllTransaction(user.email);
 
-    if (cloudTransactions != null) {
-      cloudTransactions.forEach((transaction) {
-        account.addTransaction(transaction);
-      });
+      if (cloudTransactions != null) {
+        cloudTransactions.forEach((transaction) {
+          account.addTransaction(transaction);
+        });
+      }
+
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 
   void addIncome(
@@ -55,23 +61,25 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
 
     // Behind the scenes update the firestore db i.e. add transaction to the firestore db and fetch the documentID.
-    String firebaseDocumentID = await _cloud.addTransaction(
-      'mujtaba',
-      incomeTransactionWithDummyID,
-    );
+    if (user != null) {
+      String firebaseDocumentID = await _cloud.addTransaction(
+        user.email,
+        incomeTransactionWithDummyID,
+      );
 
-    Transaction incomeTransactionWithFirebaseId = Transaction.income(
-      amount,
-      id: firebaseDocumentID,
-      description: description,
-      date: date,
-    );
+      Transaction incomeTransactionWithFirebaseId = Transaction.income(
+        amount,
+        id: firebaseDocumentID,
+        description: description,
+        date: date,
+      );
 
-    // Once documentID is received update the transaction. This too happens behind the scenes.
-    updateTransaction(
-      original: incomeTransactionWithDummyID,
-      replacement: incomeTransactionWithFirebaseId,
-    );
+      // Once documentID is received update the transaction. This too happens behind the scenes.
+      updateTransaction(
+        original: incomeTransactionWithDummyID,
+        replacement: incomeTransactionWithFirebaseId,
+      );
+    }
   }
 
   void addExpense(
@@ -96,23 +104,25 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
 
     // Behind the scenes update the firestore db i.e. add transaction to the firestore db and fetch the documentID.
-    String firebaseDocumentID = await _cloud.addTransaction(
-      'mujtaba',
-      expenseTransactionWithDummyID,
-    );
+    if (user != null) {
+      String firebaseDocumentID = await _cloud.addTransaction(
+        user.email,
+        expenseTransactionWithDummyID,
+      );
 
-    Transaction expenseTransactionWithFirebaseId = Transaction.expense(
-      amount,
-      id: firebaseDocumentID,
-      description: description,
-      date: date,
-    );
+      Transaction expenseTransactionWithFirebaseId = Transaction.expense(
+        amount,
+        id: firebaseDocumentID,
+        description: description,
+        date: date,
+      );
 
-    // Once documentID is received update the transaction. This too happens behind the scenes.
-    updateTransaction(
-      original: expenseTransactionWithDummyID,
-      replacement: expenseTransactionWithFirebaseId,
-    );
+      // Once documentID is received update the transaction. This too happens behind the scenes.
+      updateTransaction(
+        original: expenseTransactionWithDummyID,
+        replacement: expenseTransactionWithFirebaseId,
+      );
+    }
   }
 
   void updateTransaction({
@@ -123,7 +133,9 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
 
     // Update in firestore db, behind the scenes.
-    _cloud.updateTransaction('mujtaba', replacement);
+    if (user != null) {
+      _cloud.updateTransaction(user.email, replacement);
+    }
   }
 
   void deleteTransaction(Transaction transaction) {
@@ -131,7 +143,9 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
 
     // Delete in firestore.
-    _cloud.deleteTransaction('mujtaba', transaction);
+    if (user != null) {
+      _cloud.deleteTransaction(user.email, transaction);
+    }
   }
 
   set currency(String value) {
@@ -147,4 +161,41 @@ class AppProvider extends ChangeNotifier {
   }
 
   double get lowBalanceThreshold => _lowBalanceThreshold;
+
+  void addUser(User user) async {
+    List<User> allUsers = await _cloud.getAllUsers();
+
+    bool userExists = false;
+
+    allUsers.forEach((cloudUser) {
+      if (cloudUser.email == user.email) {
+        userExists = true;
+      }
+    });
+
+    if (!userExists) {
+      _cloud.addUser(user);
+      this.user = user;
+    }
+  }
+
+  Future<bool> signIn(String email, String password) async {
+    List<User> allUsers = await _cloud.getAllUsers();
+
+    bool signedIn = false;
+
+    allUsers.forEach((User userOnCloud) {
+      if (userOnCloud.email.contains(email) &&
+          userOnCloud.password.contains(password)) {
+        this.user = userOnCloud;
+        signedIn = true;
+      }
+    });
+
+    if (signedIn) {
+      _loadData();
+    }
+
+    return signedIn;
+  }
 }
