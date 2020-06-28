@@ -6,6 +6,7 @@ import '../components/bottom_nav_bar.dart';
 import '../components/transactions_list.dart';
 import '../country_currency_chooser/currency_chooser_dialog.dart';
 import '../providers/app_provider.dart';
+import '../components/sign_in_sign_up_dialog.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -23,10 +24,16 @@ class _HomepageState extends State<Homepage> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            backgroundImage: AssetImage('assets/test.jpg'),
+        leading: InkWell(
+          onTap: () => showDialog(
+            context: context,
+            builder: (context) => SignInSignUpDialog(),
+          ),
+                  child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              backgroundImage: AssetImage('assets/test.jpg'),
+            ),
           ),
         ),
         title: Text(

@@ -13,7 +13,7 @@ class BasicDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: Container(
-        height: height ,
+        // height: height != null ? height : null,
         padding: EdgeInsets.all(5.0),
         decoration: BoxDecoration(
           border: Border.all(
