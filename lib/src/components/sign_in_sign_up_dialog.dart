@@ -147,6 +147,7 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
                   padding: const EdgeInsets.all(8.0),
                   child: _customTextField(
                     label: 'First Name',
+                    onSaved: (value) => firstName = value,
                   ),
                 ),
               ),
@@ -155,6 +156,7 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
                   padding: const EdgeInsets.all(8.0),
                   child: _customTextField(
                     label: 'Last Name',
+                    onSaved: (value) => lastName = value,
                   ),
                 ),
               ),
@@ -168,6 +170,7 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
                 Icons.email,
                 color: Colors.green,
               ),
+              onSaved: (value) => email = value,
             ),
           ),
           Padding(
@@ -178,6 +181,7 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
                 Icons.lock,
                 color: Colors.green,
               ),
+              onSaved: (value) => password = value,
             ),
           ),
           Padding(
@@ -196,7 +200,7 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
                       color: Colors.white,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: onSignUp,
                 ),
               ],
             ),
@@ -237,13 +241,28 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
       bool signedIn = await appProvider.signIn(email, password);
 
       if (signedIn) {
-        
-        print('user exists signing in');
-
         Navigator.pop(context);
       }
     }
   }
 
-  void onSignUp() {}
+  void onSignUp() async {
+    AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
+
+    if (_signUpFormKey.currentState.validate()) {
+      _signUpFormKey.currentState.save();
+
+      bool signedUpAndIn = await appProvider.addUser(
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+      );
+
+      if (signedUpAndIn) {
+        appProvider.signIn(email, password);
+        Navigator.pop(context);
+      }
+    }
+  }
 }

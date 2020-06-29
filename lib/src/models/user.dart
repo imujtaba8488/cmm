@@ -7,6 +7,16 @@ class User {
   String currency;
   double lowBalanceThreshold;
 
+  User({
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.password,
+    this.currency,
+    this.lowBalanceThreshold,
+  });
+
   User.fromMap(Map<String, dynamic> userMap) {
     id = userMap['id'];
     firstName = userMap['first name'];

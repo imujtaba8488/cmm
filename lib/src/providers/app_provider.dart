@@ -181,21 +181,43 @@ class AppProvider extends ChangeNotifier {
 
   double get lowBalanceThreshold => _lowBalanceThreshold;
 
-  void addUser(User user) async {
+  Future<bool> addUser({
+    @required String email,
+    @required String password,
+    String firstName,
+    String lastName,
+  }) async {
     List<User> allUsers = await _cloud.getAllUsers();
 
     bool userExists = false;
 
     allUsers.forEach((cloudUser) {
-      if (cloudUser.email == user.email) {
+      if (cloudUser.email == email) {
         userExists = true;
       }
     });
 
     if (!userExists) {
-      _cloud.addUser(user);
-      this.user = user;
+      User userToAdd = User(
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        currency: 'USD',
+        id: 'temp',
+        lowBalanceThreshold: 0.0,
+      );
+
+      String documentID = await _cloud.addUser(userToAdd);
+
+      // Immediately update the user in the background with the id received.
+      userToAdd.id = documentID;
+      _cloud.updateUser(replacementUser: userToAdd);
+
+      return true;
     }
+
+    return false;
   }
 
   Future<bool> signIn(String email, String password) async {
