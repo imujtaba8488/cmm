@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/account.dart';
 import '../models/cloud.dart';
@@ -12,12 +13,14 @@ class AppProvider extends ChangeNotifier {
   double _lowBalanceThreshold;
   static int dummyID = 0;
   User user;
+  bool isSignedIn;
 
   AppProvider()
       : account = Account(),
         _cloud = Cloud() {
     _currency = 'USD';
     _lowBalanceThreshold = 0.0;
+    isSignedIn = false;
 
     _loadData();
   }
@@ -180,22 +183,49 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<bool> signIn(String email, String password) async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+
     List<User> allUsers = await _cloud.getAllUsers();
 
-    bool signedIn = false;
+    bool signInSuccess = false;
 
     allUsers.forEach((User userOnCloud) {
       if (userOnCloud.email.contains(email) &&
           userOnCloud.password.contains(password)) {
         this.user = userOnCloud;
-        signedIn = true;
+        signInSuccess = true;
+
+        isSignedIn = true;
+
+        pref.setString('email', user.email);
+        pref.setString('password', user.password);
       }
     });
 
-    if (signedIn) {
+    if (signInSuccess) {
       _loadData();
     }
 
-    return signedIn;
+    return signInSuccess;
+  }
+
+  void signOut() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+
+    user = null;
+    isSignedIn = false;
+    account.transactions.clear();
+
+    pref.clear();
+
+    notifyListeners();
+  }
+
+  Future<bool> autoSignIn() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    String username = pref.getString('email');
+    String password = pref.getString('password');
+
+    return await signIn(username, password);
   }
 }

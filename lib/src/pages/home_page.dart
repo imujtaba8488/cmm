@@ -1,3 +1,4 @@
+import 'package:cmm/src/widgets/basic_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,16 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   double topHeight;
   double bottomHeight;
+  AppProvider appProvider;
+
+  @override
+  void initState() {
+    super.initState();
+
+    appProvider = Provider.of<AppProvider>(context, listen: false);
+
+    appProvider.autoSignIn();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +38,24 @@ class _HomepageState extends State<Homepage> {
         leading: InkWell(
           onTap: () => showDialog(
             context: context,
-            builder: (context) => SignInSignUpDialog(),
+            builder: (context) => appProvider.isSignedIn
+                ? BasicDialog(
+                    child: FlatButton(
+                      onPressed: () {
+                        appProvider.signOut();
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Sign Out',
+                        style: TextStyle(
+                          color: Colors.green,
+                        ),
+                      ),
+                    ),
+                  )
+                : SignInSignUpDialog(),
           ),
-                  child: Padding(
+          child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CircleAvatar(
               backgroundImage: AssetImage('assets/test.jpg'),

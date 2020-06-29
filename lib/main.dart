@@ -52,9 +52,7 @@ class CMM extends StatelessWidget {
             ),
             
           ),
-          home: Scaffold(
-            body: Homepage(),
-          ),
+          home: Homepage(),
         ),
       ),
     );
