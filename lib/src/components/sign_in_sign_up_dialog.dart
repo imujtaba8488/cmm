@@ -16,9 +16,13 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
 
   String firstName, lastName, email, password;
 
+  bool signingIn;
+
   @override
   void initState() {
     super.initState();
+
+    signingIn = false;
 
     firstName = lastName = email = password = '';
   }
@@ -79,55 +83,64 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
   }
 
   Widget _signInForm() {
-    return Form(
-      key: _signInFormKey,
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: _customTextField(
-              label: 'Email',
-              suffixIcon: Icon(
-                Icons.email,
-                color: Colors.green,
-              ),
-              onSaved: (value) => email = value,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: _customTextField(
-              label: 'Password',
-              suffixIcon: Icon(
-                Icons.lock,
-                color: Colors.green,
-              ),
-              onSaved: (value) => password = password,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                OutlineButton(
-                  borderSide: BorderSide(color: Colors.white),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50.0),
+    return Stack(
+      children: <Widget>[
+        Form(
+          key: _signInFormKey,
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _customTextField(
+                  label: 'Email',
+                  suffixIcon: Icon(
+                    Icons.email,
+                    color: Colors.green,
                   ),
-                  child: Text(
-                    'Sign In',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  onPressed: onSignIn,
+                  onSaved: (value) => email = value,
                 ),
-              ],
-            ),
-          )
-        ],
-      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _customTextField(
+                  label: 'Password',
+                  suffixIcon: Icon(
+                    Icons.lock,
+                    color: Colors.green,
+                  ),
+                  onSaved: (value) => password = password,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    OutlineButton(
+                      borderSide: BorderSide(color: Colors.white),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50.0),
+                      ),
+                      child: Text(
+                        'Sign In',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: onSignIn,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+        signingIn
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Container(),
+      ],
     );
   }
 
@@ -238,7 +251,15 @@ class _SignInSignUpDialogState extends State<SignInSignUpDialog> {
     if (_signInFormKey.currentState.validate()) {
       _signInFormKey.currentState.save();
 
+      setState(() {
+        signingIn = true;
+      });
+
       bool signedIn = await appProvider.signIn(email, password);
+
+      setState(() {
+        signingIn = false;
+      });
 
       if (signedIn) {
         Navigator.pop(context);

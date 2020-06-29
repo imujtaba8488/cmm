@@ -14,6 +14,7 @@ class AppProvider extends ChangeNotifier {
   static int dummyID = 0;
   User user;
   bool isSignedIn;
+  bool isDataLoading;
 
   AppProvider()
       : account = Account(),
@@ -21,12 +22,17 @@ class AppProvider extends ChangeNotifier {
     _currency = 'USD';
     _lowBalanceThreshold = 0.0;
     isSignedIn = false;
+    isDataLoading = false;
 
     _loadData();
   }
 
   void _loadData() async {
     if (user != null) {
+      isDataLoading = true;
+
+      notifyListeners();
+
       List<Transaction> cloudTransactions =
           await _cloud.readAllTransaction(user.email);
 
@@ -39,6 +45,8 @@ class AppProvider extends ChangeNotifier {
       _currency = user.currency;
 
       _lowBalanceThreshold = user.lowBalanceThreshold;
+
+      isDataLoading = false;
 
       notifyListeners();
     }

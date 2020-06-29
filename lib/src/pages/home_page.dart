@@ -1,6 +1,7 @@
 import 'package:cmm/src/widgets/basic_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../components/add_transaction_form.dart';
 import '../components/bottom_nav_bar.dart';
@@ -25,7 +26,15 @@ class _HomepageState extends State<Homepage> {
 
     appProvider = Provider.of<AppProvider>(context, listen: false);
 
-    appProvider.autoSignIn();
+    tryAutoSignIn();
+  }
+
+  void tryAutoSignIn() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+
+    if (pref.getKeys().length != 0) {
+      appProvider.autoSignIn();
+    }
   }
 
   @override
@@ -33,130 +42,145 @@ class _HomepageState extends State<Homepage> {
     topHeight = MediaQuery.of(context).size.height / 4.0;
     bottomHeight = MediaQuery.of(context).size.height - (topHeight + 24);
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: InkWell(
-          onTap: () => showDialog(
-            context: context,
-            builder: (context) => appProvider.isSignedIn
-                ? BasicDialog(
-                    child: FlatButton(
-                      onPressed: () {
-                        appProvider.signOut();
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Sign Out',
-                        style: TextStyle(
-                          color: Colors.green,
+    return Stack(
+      children: <Widget>[
+        Scaffold(
+          appBar: AppBar(
+            leading: InkWell(
+              onTap: () => showDialog(
+                context: context,
+                builder: (context) => appProvider.isSignedIn
+                    ? BasicDialog(
+                        child: FlatButton(
+                          onPressed: () {
+                            appProvider.signOut();
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Sign Out',
+                            style: TextStyle(
+                              color: Colors.green,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  )
-                : SignInSignUpDialog(),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundImage: AssetImage('assets/test.jpg'),
+                      )
+                    : SignInSignUpDialog(),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircleAvatar(
+                  backgroundImage: AssetImage('assets/test.jpg'),
+                ),
+              ),
             ),
-          ),
-        ),
-        title: InkWell(
-          onTap: () => showDialog(
-            context: context,
-            builder: (context) => appProvider.isSignedIn
-                ? BasicDialog(
-                    child: FlatButton(
-                      onPressed: () {
-                        appProvider.signOut();
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Sign Out',
-                        style: TextStyle(
-                          color: Colors.green,
+            title: InkWell(
+              onTap: () => showDialog(
+                context: context,
+                builder: (context) => appProvider.isSignedIn
+                    ? BasicDialog(
+                        child: FlatButton(
+                          onPressed: () {
+                            appProvider.signOut();
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Sign Out',
+                            style: TextStyle(
+                              color: Colors.green,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  )
-                : SignInSignUpDialog(),
-          ),
-          child: Text(
-            '${appProvider.user?.firstName ?? 'Guest'} ${appProvider.user?.lastName ?? ''}',
-            style: TextStyle(
-              fontSize: 12,
+                      )
+                    : SignInSignUpDialog(),
+              ),
+              child: Text(
+                '${appProvider.user?.firstName ?? 'Guest'} ${appProvider.user?.lastName ?? ''}',
+                style: TextStyle(
+                  fontSize: 12,
+                ),
+              ),
             ),
-          ),
-        ),
-        actions: <Widget>[
-          InkWell(
-            child: Consumer<AppProvider>(
-              builder: (context, appProvider, child) {
-                return Container(
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(50.0),
-                  ),
-                  padding: EdgeInsets.all(10.0),
-                  margin: EdgeInsets.all(10.0),
-                  child: Center(
-                    child: Text('${appProvider.currency}'),
-                  ),
-                );
-              },
-            ),
-            onTap: () => showDialog(
-              context: context,
-              builder: (context) {
-                return Consumer<AppProvider>(
+            actions: <Widget>[
+              InkWell(
+                child: Consumer<AppProvider>(
                   builder: (context, appProvider, child) {
-                    return CurrencyChooserDialog(
-                      interfaceColor: Colors.white,
-                      backgroundColor: Theme.of(context).backgroundColor,
-                      selectedCurrency: (flag, value) {
-                        appProvider.currency = value;
+                    return Container(
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(50.0),
+                      ),
+                      padding: EdgeInsets.all(10.0),
+                      margin: EdgeInsets.all(10.0),
+                      child: Center(
+                        child: Text('${appProvider.currency}'),
+                      ),
+                    );
+                  },
+                ),
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Consumer<AppProvider>(
+                      builder: (context, appProvider, child) {
+                        return CurrencyChooserDialog(
+                          interfaceColor: Colors.white,
+                          backgroundColor: Theme.of(context).backgroundColor,
+                          selectedCurrency: (flag, value) {
+                            appProvider.currency = value;
+                          },
+                        );
                       },
                     );
                   },
-                );
-              },
-            ),
-          )
-        ],
-        shape: RoundedRectangleBorder(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => showModalBottomSheet(
-          isScrollControlled: true,
-          enableDrag: true,
-          backgroundColor: Theme.of(context).backgroundColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15.0),
-              topRight: Radius.circular(15.0),
+                ),
+              )
+            ],
+            shape: RoundedRectangleBorder(),
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () => showModalBottomSheet(
+              isScrollControlled: true,
+              enableDrag: true,
+              backgroundColor: Theme.of(context).backgroundColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15.0),
+                  topRight: Radius.circular(15.0),
+                ),
+              ),
+              context: context,
+              builder: (context) => AddTransactionForm(),
             ),
           ),
-          context: context,
-          builder: (context) => AddTransactionForm(),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            _top(context),
-            Expanded(
-              child: Transactionslist(),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Column(
+              children: <Widget>[
+                _top(context),
+                Expanded(
+                  child: Transactionslist(),
+                ),
+                Container()
+              ],
             ),
-          ],
+          ),
+          bottomNavigationBar: BottomNavBar(),
         ),
-      ),
-      bottomNavigationBar: BottomNavBar(),
+        Consumer<AppProvider>(
+          builder: (context, provider, child) {
+            return provider.isDataLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Container();
+          },
+        ),
+      ],
     );
   }
 
