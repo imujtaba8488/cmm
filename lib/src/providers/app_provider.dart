@@ -36,6 +36,10 @@ class AppProvider extends ChangeNotifier {
         });
       }
 
+      _currency = user.currency;
+
+      _lowBalanceThreshold = user.lowBalanceThreshold;
+
       notifyListeners();
     }
   }
@@ -153,6 +157,12 @@ class AppProvider extends ChangeNotifier {
 
   set currency(String value) {
     _currency = value;
+
+    if (user != null) {
+      user.currency = _currency;
+      _cloud.updateUser(replacementUser: user);
+    }
+
     notifyListeners();
   }
 
@@ -160,6 +170,12 @@ class AppProvider extends ChangeNotifier {
 
   set lowBalanceThreshold(double value) {
     _lowBalanceThreshold = value;
+
+    if (user != null) {
+      user.lowBalanceThreshold = _lowBalanceThreshold;
+      _cloud.updateUser(replacementUser: user);
+    }
+
     notifyListeners();
   }
 

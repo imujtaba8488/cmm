@@ -62,10 +62,31 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
         ),
-        title: Text(
-          'Welcome Back Mujtaba !',
-          style: TextStyle(
-            fontSize: 12,
+        title: InkWell(
+          onTap: () => showDialog(
+            context: context,
+            builder: (context) => appProvider.isSignedIn
+                ? BasicDialog(
+                    child: FlatButton(
+                      onPressed: () {
+                        appProvider.signOut();
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Sign Out',
+                        style: TextStyle(
+                          color: Colors.green,
+                        ),
+                      ),
+                    ),
+                  )
+                : SignInSignUpDialog(),
+          ),
+          child: Text(
+            '${appProvider.user?.firstName ?? 'Guest'} ${appProvider.user?.lastName ?? ''}',
+            style: TextStyle(
+              fontSize: 12,
+            ),
           ),
         ),
         actions: <Widget>[

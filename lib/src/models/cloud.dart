@@ -58,4 +58,10 @@ class Cloud {
 
     return allUsers;
   }
+
+  void updateUser({User replacementUser}) {
+    _firestore.collection('users').document(replacementUser.id).setData(
+          replacementUser.asMap(),
+        );
+  }
 }

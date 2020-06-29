@@ -4,6 +4,8 @@ class User {
   String lastName;
   String email;
   String password;
+  String currency;
+  double lowBalanceThreshold;
 
   User.fromMap(Map<String, dynamic> userMap) {
     id = userMap['id'];
@@ -11,13 +13,17 @@ class User {
     lastName = userMap['last name'];
     email = userMap['email'];
     password = userMap['password'];
+    currency = userMap['currency'];
+    lowBalanceThreshold = userMap['lowBalanceThreshold'];
   }
 
-  Map<String, String> asMap() => {
+  Map<String, dynamic> asMap() => {
         'id': id,
         'first name': firstName,
         'last name': lastName,
         'email': email,
         'password': password,
+        'currency': currency,
+        'lowBalanceThreshold': lowBalanceThreshold,
       };
 }
