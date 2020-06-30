@@ -1,4 +1,3 @@
-import 'package:cmm/src/widgets/basic_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,7 +7,8 @@ import '../components/bottom_nav_bar.dart';
 import '../components/transactions_list.dart';
 import '../country_currency_chooser/currency_chooser_dialog.dart';
 import '../providers/app_provider.dart';
-import '../components/sign_in_sign_up_dialog.dart';
+import '../login/login_dialog.dart';
+import '../widgets/basic_dialog.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -26,14 +26,29 @@ class _HomepageState extends State<Homepage> {
 
     appProvider = Provider.of<AppProvider>(context, listen: false);
 
-    tryAutoSignIn();
+    // context parameter is required to show the LoginDialog.
+    tryAutoSignIn(context);
   }
 
-  void tryAutoSignIn() async {
+  void tryAutoSignIn(BuildContext context) async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
 
+    bool signedIn = false;
+
     if (pref.getKeys().length != 0) {
-      appProvider.autoSignIn();
+      signedIn = await appProvider.autoSignIn();
+    }
+
+    // First wait for the autoSignIn. If autoSignIn fails, show the LoginDialog. This ensures everybody signs in or signs up for the app.
+
+    if (!signedIn) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await showDialog<String>(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) => LoginDialog(),
+        );
+      });
     }
   }
 
@@ -64,7 +79,7 @@ class _HomepageState extends State<Homepage> {
                           ),
                         ),
                       )
-                    : SignInSignUpDialog(),
+                    : LoginDialog(),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -91,7 +106,7 @@ class _HomepageState extends State<Homepage> {
                           ),
                         ),
                       )
-                    : SignInSignUpDialog(),
+                    : LoginDialog(),
               ),
               child: Text(
                 '${appProvider.user?.firstName ?? 'Guest'} ${appProvider.user?.lastName ?? ''}',
