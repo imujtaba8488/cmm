@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -194,6 +196,7 @@ class AppProvider extends ChangeNotifier {
     @required String password,
     String firstName,
     String lastName,
+    File imageFile,
   }) async {
     List<User> allUsers = await _cloud.getAllUsers();
 
@@ -216,12 +219,16 @@ class AppProvider extends ChangeNotifier {
         lowBalanceThreshold: 0.0,
       );
 
-      String documentID = await _cloud.addUser(userToAdd);
+      Map<String, dynamic> data =
+          await _cloud.addUser(userToAdd, imageFile: imageFile);
 
       // Immediately update the user in the background with the id received.
-      userToAdd.id = documentID;
-      _cloud.updateUser(replacementUser: userToAdd);
+      userToAdd.id = data['id'];
+      userToAdd.imageUrl = data['imageUrl'];
 
+      print(data['imageUrl']);
+
+      _cloud.updateUser(replacementUser: userToAdd);
       return true;
     }
 
@@ -258,10 +265,11 @@ class AppProvider extends ChangeNotifier {
   void signOut() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
 
+    // Reset everything.
     user = null;
     isSignedIn = false;
-    account.transactions.clear();
-
+    currency = 'USD';
+    account.reset();
     pref.clear();
 
     notifyListeners();

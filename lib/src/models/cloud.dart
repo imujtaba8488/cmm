@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'dart:io';
 
 import 'transaction.dart' as app;
 import 'user.dart';
@@ -40,11 +43,22 @@ class Cloud {
     return allTransactions;
   }
 
-  Future<String> addUser(User user) async {
+  Future<Map<String, String>> addUser(User user, {File imageFile}) async {
     DocumentReference docReference =
         await _firestore.collection('users').add(user.asMap());
 
-    return docReference.documentID;
+    StorageReference storageReference =
+        FirebaseStorage.instance.ref().child(user.email);
+
+    StorageUploadTask uploadTask = storageReference.putFile(imageFile);
+    await uploadTask.onComplete;
+
+    String imageUrl = await storageReference.getDownloadURL();
+
+    return {
+      'id': docReference.documentID,
+      'imageUrl': imageUrl,
+    };
   }
 
   Future<List<User>> getAllUsers() async {

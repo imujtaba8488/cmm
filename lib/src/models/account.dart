@@ -1,11 +1,15 @@
 import './transaction.dart';
 
 class Account {
-  final String name;
   double _balance = 0.0;
   final List<Transaction> transactions;
 
-  Account({this.name}) : transactions = List();
+  Account() : transactions = List();
+
+  void reset() {
+    _balance = 0.0;
+    transactions.clear();
+  }
 
   void addIncome(Transaction transaction) {
     if (transaction.type == TransactionType.income) {

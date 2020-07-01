@@ -57,6 +57,8 @@ class _HomepageState extends State<Homepage> {
     topHeight = MediaQuery.of(context).size.height / 4.0;
     bottomHeight = MediaQuery.of(context).size.height - (topHeight + 24);
 
+    print(appProvider.user?.imageUrl);
+
     return Stack(
       children: <Widget>[
         Scaffold(
@@ -70,6 +72,11 @@ class _HomepageState extends State<Homepage> {
                           onPressed: () {
                             appProvider.signOut();
                             Navigator.pop(context);
+
+                            showDialog(
+                              context: context,
+                              builder: (context) => LoginDialog(),
+                            );
                           },
                           child: Text(
                             'Sign Out',
@@ -84,7 +91,9 @@ class _HomepageState extends State<Homepage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/test.jpg'),
+                  backgroundImage: appProvider.user?.imageUrl == null
+                      ? AssetImage('assets/test.jpg')
+                      : NetworkImage(appProvider.user?.imageUrl),
                 ),
               ),
             ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class User {
   String id;
   String firstName;
@@ -6,6 +8,7 @@ class User {
   String password;
   String currency;
   double lowBalanceThreshold;
+  String imageUrl;
 
   User({
     this.id,
@@ -15,6 +18,7 @@ class User {
     this.password,
     this.currency,
     this.lowBalanceThreshold,
+    this.imageUrl,
   });
 
   User.fromMap(Map<String, dynamic> userMap) {
@@ -25,6 +29,7 @@ class User {
     password = userMap['password'];
     currency = userMap['currency'];
     lowBalanceThreshold = userMap['lowBalanceThreshold'];
+    imageUrl = userMap['imageUrl'];
   }
 
   Map<String, dynamic> asMap() => {
@@ -35,5 +40,6 @@ class User {
         'password': password,
         'currency': currency,
         'lowBalanceThreshold': lowBalanceThreshold,
+        'imageUrl': imageUrl,
       };
 }

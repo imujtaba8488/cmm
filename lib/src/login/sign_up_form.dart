@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cmm/src/providers/app_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'custom_text_form_field.dart';
@@ -15,11 +19,18 @@ class _SignUpFormState extends State<SignUpForm> {
 
   String _firstName, _lastName, _email, _password;
 
+  String imagePath;
+
+  File imagefile;
+
   @override
   void initState() {
     super.initState();
 
     _firstName = _lastName = _email = _password = '';
+
+    imagePath = 'assets/test.jpg';
+    imagefile = File('assets/test.jpg');
   }
 
   @override
@@ -28,9 +39,27 @@ class _SignUpFormState extends State<SignUpForm> {
       key: _signUpFormKey,
       child: Column(
         children: <Widget>[
-          CircleAvatar(
-            radius: 30,
-            backgroundImage: AssetImage('assets/test.jpg'),
+          InkWell(
+            onTap: () async {
+              if (await Permission.storage.request().isGranted) {
+                final picker = ImagePicker();
+
+                final pickedFile = await picker.getImage(
+                  source: ImageSource.camera,
+                  imageQuality: 25,
+                );
+
+                imagefile = File(pickedFile.path);
+
+                setState(() {
+                  imagePath = pickedFile.path;
+                });
+              }
+            },
+            child: CircleAvatar(
+              radius: 30,
+              backgroundImage: AssetImage(imagePath),
+            ),
           ),
           Row(
             children: <Widget>[
@@ -131,10 +160,11 @@ class _SignUpFormState extends State<SignUpForm> {
         password: _password,
         firstName: _firstName,
         lastName: _lastName,
+        imageFile: imagefile,
       );
 
       if (signedUpAndIn) {
-        appProvider.signIn(_email, _password);
+        await appProvider.signIn(_email, _password);
         Navigator.pop(context);
       }
     }
