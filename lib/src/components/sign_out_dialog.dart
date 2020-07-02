@@ -4,8 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../widgets/basic_dialog.dart';
 import '../login/login_dialog.dart';
-import '../login/sign_up_form.dart';
-import 'avatar.dart';
+import '../avatar_picker/avatar.dart';
 
 class SignOutDialog extends StatelessWidget {
   @override

@@ -2,12 +2,11 @@ import 'dart:io';
 
 import 'package:cmm/src/providers/app_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-import 'custom_text_form_field.dart';
 import '../providers/app_provider.dart';
+import 'custom_text_form_field.dart';
+import '../avatar_picker/avatar.dart';
 
 class SignUpForm extends StatefulWidget {
   final bool enabled;
@@ -27,7 +26,6 @@ class _SignUpFormState extends State<SignUpForm> {
 
   File imagefile;
 
-
   @override
   void initState() {
     super.initState();
@@ -43,13 +41,7 @@ class _SignUpFormState extends State<SignUpForm> {
       key: _signUpFormKey,
       child: Column(
         children: <Widget>[
-          InkWell(
-            onTap: _pickAvatar,
-            child: CircleAvatar(
-              radius: 30,
-              backgroundImage: AssetImage(imagePath),
-            ),
-          ),
+          Avatar(),
           Row(
             children: <Widget>[
               Expanded(
@@ -162,23 +154,4 @@ class _SignUpFormState extends State<SignUpForm> {
       }
     }
   }
-
-  void _pickAvatar() async {
-    if (await Permission.storage.request().isGranted) {
-      final picker = ImagePicker();
-
-      final pickedFile = await picker.getImage(
-        source: ImageSource.camera,
-        imageQuality: 25,
-      );
-
-      imagefile = File(pickedFile.path);
-
-      setState(() {
-        imagePath = pickedFile.path;
-      });
-    }
-  }
 }
-
-

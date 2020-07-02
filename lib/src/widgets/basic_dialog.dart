@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 class BasicDialog extends StatelessWidget {
   final Widget child;
   final double height;
-  final bool roundedCornors;
+  final bool hasRoundedCorners;
   final double borderWidth;
 
   BasicDialog({
     this.child,
     this.height,
-    this.roundedCornors = true,
+    this.hasRoundedCorners = true,
     this.borderWidth = 1.5,
   });
   @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Theme.of(context).backgroundColor,
-      shape: roundedCornors
+      shape: hasRoundedCorners
           ? RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5.0),
             )
@@ -29,7 +29,7 @@ class BasicDialog extends StatelessWidget {
             color: Colors.white,
             width: borderWidth,
           ),
-          borderRadius: roundedCornors ? BorderRadius.circular(5.0) : null,
+          borderRadius: hasRoundedCorners ? BorderRadius.circular(5.0) : null,
         ),
         child: child,
       ),
