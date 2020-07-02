@@ -9,6 +9,7 @@ import '../country_currency_chooser/currency_chooser_dialog.dart';
 import '../providers/app_provider.dart';
 import '../login/login_dialog.dart';
 import '../widgets/basic_dialog.dart';
+import '../components/custom_button.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -16,8 +17,6 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  double topHeight;
-  double bottomHeight;
   AppProvider appProvider;
 
   @override
@@ -42,23 +41,20 @@ class _HomepageState extends State<Homepage> {
     // First wait for the autoSignIn. If autoSignIn fails, show the LoginDialog. This ensures everybody signs in or signs up for the app.
 
     if (!signedIn) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await showDialog<String>(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) => LoginDialog(),
-        );
-      });
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) async {
+          await showDialog<String>(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) => LoginDialog(),
+          );
+        },
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    topHeight = MediaQuery.of(context).size.height / 4.0;
-    bottomHeight = MediaQuery.of(context).size.height - (topHeight + 24);
-
-    print(appProvider.user?.imageUrl);
-
     return Stack(
       children: <Widget>[
         Scaffold(
@@ -66,27 +62,8 @@ class _HomepageState extends State<Homepage> {
             leading: InkWell(
               onTap: () => showDialog(
                 context: context,
-                builder: (context) => appProvider.isSignedIn
-                    ? BasicDialog(
-                        child: FlatButton(
-                          onPressed: () {
-                            appProvider.signOut();
-                            Navigator.pop(context);
-
-                            showDialog(
-                              context: context,
-                              builder: (context) => LoginDialog(),
-                            );
-                          },
-                          child: Text(
-                            'Sign Out',
-                            style: TextStyle(
-                              color: Colors.green,
-                            ),
-                          ),
-                        ),
-                      )
-                    : LoginDialog(),
+                builder: (context) =>
+                    appProvider.isSignedIn ? SignOutDialog() : LoginDialog(),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -100,84 +77,26 @@ class _HomepageState extends State<Homepage> {
             title: InkWell(
               onTap: () => showDialog(
                 context: context,
-                builder: (context) => appProvider.isSignedIn
-                    ? BasicDialog(
-                        child: FlatButton(
-                          onPressed: () {
-                            appProvider.signOut();
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            'Sign Out',
-                            style: TextStyle(
-                              color: Colors.green,
-                            ),
-                          ),
-                        ),
-                      )
-                    : LoginDialog(),
+                builder: (context) =>
+                    appProvider.isSignedIn ? SignOutDialog() : LoginDialog(),
               ),
               child: Text(
-                '${appProvider.user?.firstName ?? 'Guest'} ${appProvider.user?.lastName ?? ''}',
+                '${appProvider.user?.firstName} ${appProvider.user?.lastName}',
                 style: TextStyle(
                   fontSize: 12,
                 ),
               ),
             ),
             actions: <Widget>[
-              InkWell(
-                child: Consumer<AppProvider>(
-                  builder: (context, appProvider, child) {
-                    return Container(
-                      width: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(50.0),
-                      ),
-                      padding: EdgeInsets.all(10.0),
-                      margin: EdgeInsets.all(10.0),
-                      child: Center(
-                        child: Text('${appProvider.currency}'),
-                      ),
-                    );
-                  },
-                ),
-                onTap: () => showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Consumer<AppProvider>(
-                      builder: (context, appProvider, child) {
-                        return CurrencyChooserDialog(
-                          interfaceColor: Colors.white,
-                          backgroundColor: Theme.of(context).backgroundColor,
-                          selectedCurrency: (flag, value) {
-                            appProvider.currency = value;
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
-              )
+              CustomButton(
+                child: Text('${appProvider.currency}'),
+                onPressed: () => showCurrencyChooser(context),
+              ),
             ],
-            shape: RoundedRectangleBorder(),
           ),
           floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
-            onPressed: () => showModalBottomSheet(
-              isScrollControlled: true,
-              enableDrag: true,
-              backgroundColor: Theme.of(context).backgroundColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15.0),
-                  topRight: Radius.circular(15.0),
-                ),
-              ),
-              context: context,
-              builder: (context) => AddTransactionForm(),
-            ),
+            onPressed: () => showAddTransactionSheet(context),
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
@@ -185,8 +104,11 @@ class _HomepageState extends State<Homepage> {
           body: SafeArea(
             child: Column(
               children: <Widget>[
-                _top(context),
                 Expanded(
+                  child: Dashboard(),
+                ),
+                Expanded(
+                  flex: 2,
                   child: Transactionslist(),
                 ),
                 Container()
@@ -207,10 +129,12 @@ class _HomepageState extends State<Homepage> {
       ],
     );
   }
+}
 
-  Widget _top(BuildContext context) {
+class Dashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      height: topHeight,
       padding: EdgeInsets.all(18.0),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
@@ -218,170 +142,249 @@ class _HomepageState extends State<Homepage> {
       ),
       child: Consumer<AppProvider>(
         builder: (context, appProvider, child) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  _balanceAndIncomeExpenseBar(appProvider),
-                  _totalIncomeExpense(appProvider),
-                ],
-              ),
-              appProvider.account.balance < appProvider.lowBalanceThreshold
-                  ? Container(
-                      width: MediaQuery.of(context).size.width / 2.6,
-                      child: FittedBox(
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 2,
+                      child: BalanceView(),
+                    ),
+                    Expanded(
+                      child: TotalIncomeExpenseView(),
+                    ),
+                  ],
+                ),
+                appProvider.account.balance < appProvider.lowBalanceThreshold
+                    ? Container(
                         child: Text(
                           'You are running low on balance!',
+                          style: TextStyle(fontSize: 12),
                         ),
-                      ),
-                    )
-                  : Container(),
-            ],
+                      )
+                    : Container(),
+              ],
+            ),
           );
         },
       ),
     );
   }
+}
 
-  Widget _balanceAndIncomeExpenseBar(AppProvider appProvider) {
-    return Container(
-      width: MediaQuery.of(context).size.width / 2.5,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            'BALANCE',
-            style: TextStyle(
-              fontSize: 12,
-            ),
-          ),
-          FittedBox(
-            child: Row(
-              children: <Widget>[
-                Text(
-                  '${appProvider.currency}',
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
+class BalanceView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AppProvider>(
+      builder: (context, appProvider, widget) {
+        return Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'BALANCE',
+                style: TextStyle(
+                  fontSize: 12,
                 ),
-                Text(
-                  ' ${appProvider.account.balance}',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                appProvider.account.totalIncomeFor(DateTime.now()) >
-                        appProvider.account.totalExpensesFor(
-                          DateTime.now(),
-                        )
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                        child: Icon(Icons.arrow_upward, size: 12),
-                      )
-                    : Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 5,
-                        ),
-                        child: Icon(
-                          Icons.arrow_downward,
-                          size: 12,
-                        ),
+              ),
+              FittedBox(
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      '${appProvider.currency}',
+                      style: TextStyle(
+                        fontSize: 12,
                       ),
-              ],
-            ),
+                    ),
+                    Text(
+                      ' ${appProvider.account.balance}',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    appProvider.account.totalIncomeFor(DateTime.now()) >
+                            appProvider.account.totalExpensesFor(
+                              DateTime.now(),
+                            )
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            child: Icon(Icons.arrow_upward, size: 12),
+                          )
+                        : Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 5,
+                            ),
+                            child: Icon(
+                              Icons.arrow_downward,
+                              size: 12,
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
+}
 
-  Widget _totalIncomeExpense(AppProvider appProvider) {
-    return Container(
-      width: MediaQuery.of(context).size.width / 3.0,
-      padding: EdgeInsets.all(5.0),
-      decoration: BoxDecoration(
-        border: Border(
-          left: BorderSide(
-            width: 0.2,
-            color: Colors.white,
+class TotalIncomeExpenseView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AppProvider>(
+      builder: (context, appProvider, child) {
+        return Container(
+          padding: EdgeInsets.all(5.0),
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(
+                width: 0.2,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FittedBox(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'Total Expenses',
+                        style: TextStyle(
+                          fontSize: 10,
+                        ),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Text(
+                            '${appProvider.currency}',
+                            style: TextStyle(
+                              fontSize: 10,
+                            ),
+                          ),
+                          SizedBox(width: 5.0),
+                          Text(
+                            '${appProvider.account.totalExpense}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FittedBox(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'Total Income',
+                        style: TextStyle(
+                          fontSize: 10,
+                        ),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Text(
+                            '${appProvider.currency}',
+                            style: TextStyle(
+                              fontSize: 10,
+                            ),
+                          ),
+                          SizedBox(width: 5.0),
+                          Text(
+                            '${appProvider.account.totalIncome}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class SignOutDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    AppProvider appProvider = Provider.of<AppProvider>(context);
+
+    return BasicDialog(
+      child: FlatButton(
+        onPressed: () {
+          appProvider.signOut();
+          Navigator.pop(context);
+
+          showDialog(
+            context: context,
+            builder: (context) => LoginDialog(),
+          );
+        },
+        child: Text(
+          'Sign Out',
+          style: TextStyle(
+            color: Colors.green,
           ),
         ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FittedBox(
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    'Total Expenses',
-                    style: TextStyle(
-                      fontSize: 10,
-                    ),
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        '${appProvider.currency}',
-                        style: TextStyle(
-                          fontSize: 10,
-                        ),
-                      ),
-                      SizedBox(width: 5.0),
-                      Text(
-                        '${appProvider.account.totalExpense}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FittedBox(
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    'Total Income',
-                    style: TextStyle(
-                      fontSize: 10,
-                    ),
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        '${appProvider.currency}',
-                        style: TextStyle(
-                          fontSize: 10,
-                        ),
-                      ),
-                      SizedBox(width: 5.0),
-                      Text(
-                        '${appProvider.account.totalIncome}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
     );
   }
+}
+
+void showCurrencyChooser(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Consumer<AppProvider>(
+        builder: (context, appProvider, child) {
+          return CurrencyChooserDialog(
+            interfaceColor: Colors.white,
+            backgroundColor: Theme.of(context).backgroundColor,
+            selectedCurrency: (flag, value) {
+              appProvider.currency = value;
+            },
+          );
+        },
+      );
+    },
+  );
+}
+
+void showAddTransactionSheet(BuildContext context) {
+  showModalBottomSheet(
+    isScrollControlled: true,
+    enableDrag: true,
+    backgroundColor: Theme.of(context).backgroundColor,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(15.0),
+        topRight: Radius.circular(15.0),
+      ),
+    ),
+    context: context,
+    builder: (context) => AddTransactionForm(),
+  );
 }

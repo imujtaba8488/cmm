@@ -219,16 +219,18 @@ class AppProvider extends ChangeNotifier {
         lowBalanceThreshold: 0.0,
       );
 
-      Map<String, dynamic> data =
+      Map<String, dynamic> result =
           await _cloud.addUser(userToAdd, imageFile: imageFile);
 
       // Immediately update the user in the background with the id received.
-      userToAdd.id = data['id'];
-      userToAdd.imageUrl = data['imageUrl'];
+      userToAdd.id = result['id'];
 
-      print(data['imageUrl']);
+      if (result['imageUrl'] != null) {
+        userToAdd.imageUrl = result['imageUrl'];
+      }
 
       _cloud.updateUser(replacementUser: userToAdd);
+
       return true;
     }
 

@@ -30,7 +30,6 @@ class _SignUpFormState extends State<SignUpForm> {
     _firstName = _lastName = _email = _password = '';
 
     imagePath = 'assets/test.jpg';
-    imagefile = File('assets/test.jpg');
   }
 
   @override

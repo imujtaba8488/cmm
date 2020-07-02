@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'dart:io';
 
 import 'transaction.dart' as app;
@@ -47,13 +46,18 @@ class Cloud {
     DocumentReference docReference =
         await _firestore.collection('users').add(user.asMap());
 
-    StorageReference storageReference =
-        FirebaseStorage.instance.ref().child(user.email);
+    // If an imageFile was specified, store the same on the Firestore.
+    String imageUrl;
 
-    StorageUploadTask uploadTask = storageReference.putFile(imageFile);
-    await uploadTask.onComplete;
+    if (imageFile != null) {
+      StorageReference storageReference =
+          FirebaseStorage.instance.ref().child(user.email);
 
-    String imageUrl = await storageReference.getDownloadURL();
+      StorageUploadTask uploadTask = storageReference.putFile(imageFile);
+      await uploadTask.onComplete;
+
+      imageUrl = await storageReference.getDownloadURL();
+    }
 
     return {
       'id': docReference.documentID,
