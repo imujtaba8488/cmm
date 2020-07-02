@@ -8,6 +8,7 @@ class CustomTextFormField extends StatelessWidget {
   final Function onSaved;
   final Validator validator;
   final bool obscureText;
+  final bool enabled;
 
   CustomTextFormField({
     this.label,
@@ -15,6 +16,7 @@ class CustomTextFormField extends StatelessWidget {
     this.onSaved,
     this.validator,
     this.obscureText = false,
+    this.enabled = true,
   });
 
   @override
@@ -35,6 +37,7 @@ class CustomTextFormField extends StatelessWidget {
       onSaved: onSaved,
       validator: validator,
       obscureText: obscureText,
+      enabled: enabled,
     );
   }
 }

@@ -21,6 +21,9 @@ class CMM extends StatelessWidget {
             appBarTheme: AppBarTheme(
               color: const Color(0xFF02072F),
               textTheme: TextTheme(
+                headline6: TextStyle(
+                  fontFamily: 'Saira'
+                ),
                 bodyText1: TextStyle(
                   fontFamily: 'Cairo',
                   fontSize: 10,

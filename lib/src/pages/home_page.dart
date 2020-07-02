@@ -4,13 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../components/add_transaction_form.dart';
 import '../components/bottom_nav_bar.dart';
-import '../components/transactions_list.dart';
-import '../country_currency_chooser/currency_chooser_dialog.dart';
-import '../providers/app_provider.dart';
-import '../login/login_dialog.dart';
 import '../components/custom_button.dart';
 import '../components/dashboard.dart';
-import '../components/sign_out_dialog.dart';
+import '../components/profile_view.dart';
+import '../components/transactions_list.dart';
+import '../country_currency_chooser/currency_chooser_dialog.dart';
+import '../login/login_dialog.dart';
+import '../providers/app_provider.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -18,19 +18,16 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  AppProvider appProvider;
-
   @override
   void initState() {
     super.initState();
-
-    appProvider = Provider.of<AppProvider>(context, listen: false);
 
     // context parameter is required to show the LoginDialog.
     tryAutoSignIn(context);
   }
 
   void tryAutoSignIn(BuildContext context) async {
+    AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
     final SharedPreferences pref = await SharedPreferences.getInstance();
 
     bool signedIn = false;
@@ -60,38 +57,15 @@ class _HomepageState extends State<Homepage> {
       children: <Widget>[
         Scaffold(
           appBar: AppBar(
-            leading: InkWell(
-              onTap: () => showDialog(
-                context: context,
-                builder: (context) =>
-                    appProvider.isSignedIn ? SignOutDialog() : LoginDialog(),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  backgroundImage: appProvider.user?.imageUrl == null
-                      ? AssetImage('assets/test.jpg')
-                      : NetworkImage(appProvider.user?.imageUrl),
-                ),
-              ),
-            ),
-            title: InkWell(
-              onTap: () => showDialog(
-                context: context,
-                builder: (context) =>
-                    appProvider.isSignedIn ? SignOutDialog() : LoginDialog(),
-              ),
-              child: Text(
-                '${appProvider.user?.firstName} ${appProvider.user?.lastName}',
-                style: TextStyle(
-                  fontSize: 12,
-                ),
-              ),
-            ),
+            title: ProfileView(),
             actions: <Widget>[
-              CustomButton(
-                child: Text('${appProvider.currency}'),
-                onPressed: () => _showCurrencyChooser(context),
+              Consumer<AppProvider>(
+                builder: (context, pro, child) {
+                  return CustomButton(
+                    child: Text('${pro.currency}'),
+                    onPressed: () => _showCurrencyChooser(context),
+                  );
+                },
               ),
             ],
           ),

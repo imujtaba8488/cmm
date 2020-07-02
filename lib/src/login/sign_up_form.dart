@@ -10,6 +10,10 @@ import 'custom_text_form_field.dart';
 import '../providers/app_provider.dart';
 
 class SignUpForm extends StatefulWidget {
+  final bool enabled;
+
+  SignUpForm({this.enabled = true});
+
   @override
   _SignUpFormState createState() => _SignUpFormState();
 }
@@ -22,6 +26,7 @@ class _SignUpFormState extends State<SignUpForm> {
   String imagePath;
 
   File imagefile;
+
 
   @override
   void initState() {
@@ -39,22 +44,7 @@ class _SignUpFormState extends State<SignUpForm> {
       child: Column(
         children: <Widget>[
           InkWell(
-            onTap: () async {
-              if (await Permission.storage.request().isGranted) {
-                final picker = ImagePicker();
-
-                final pickedFile = await picker.getImage(
-                  source: ImageSource.camera,
-                  imageQuality: 25,
-                );
-
-                imagefile = File(pickedFile.path);
-
-                setState(() {
-                  imagePath = pickedFile.path;
-                });
-              }
-            },
+            onTap: _pickAvatar,
             child: CircleAvatar(
               radius: 30,
               backgroundImage: AssetImage(imagePath),
@@ -68,6 +58,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   child: CustomTextFormField(
                     label: 'First Name',
                     onSaved: (value) => _firstName = value,
+                    enabled: widget.enabled,
                   ),
                 ),
               ),
@@ -77,6 +68,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   child: CustomTextFormField(
                     label: 'Last Name',
                     onSaved: (value) => _lastName = value,
+                    enabled: widget.enabled,
                   ),
                 ),
               ),
@@ -100,6 +92,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   return null;
                 }
               },
+              enabled: widget.enabled,
             ),
           ),
           Padding(
@@ -120,6 +113,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   return null;
                 }
               },
+              enabled: widget.enabled,
             ),
           ),
           Padding(
@@ -168,4 +162,23 @@ class _SignUpFormState extends State<SignUpForm> {
       }
     }
   }
+
+  void _pickAvatar() async {
+    if (await Permission.storage.request().isGranted) {
+      final picker = ImagePicker();
+
+      final pickedFile = await picker.getImage(
+        source: ImageSource.camera,
+        imageQuality: 25,
+      );
+
+      imagefile = File(pickedFile.path);
+
+      setState(() {
+        imagePath = pickedFile.path;
+      });
+    }
+  }
 }
+
+
