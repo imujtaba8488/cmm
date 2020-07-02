@@ -5,6 +5,7 @@ import '../models/transaction.dart';
 import '../providers/app_provider.dart';
 import '../widgets/date_selector.dart';
 import '../widgets/radio_selection.dart';
+import '../components/custom_button.dart';
 
 class TransactionDetailsDialog extends StatefulWidget {
   final Transaction transaction;
@@ -85,7 +86,9 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               _customizedOptionSelector(),
-              _editSaveButton(),
+              Expanded(
+                child: _editSaveButton(),
+              ),
             ],
           ),
           SizedBox(height: 5.0),
@@ -110,31 +113,17 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
   }
 
   Widget _editSaveButton() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.green,
-        borderRadius: BorderRadius.circular(100.0),
-        border: Border.all(color: Colors.white),
-      ),
-      padding: const EdgeInsets.all(10.0),
-      margin: const EdgeInsets.all(5.0),
-      child: InkWell(
-        onTap: () {
-          setState(() {
-            isEditingEnabled = !isEditingEnabled;
-            if (isEditingEnabled == false) {
-              _onSaved();
-            }
-          });
-        },
-        child: Row(
-          children: <Widget>[
-            Text(isEditingEnabled ? 'Save' : 'Edit'),
-            SizedBox(width: 5.0),
-            Icon(isEditingEnabled ? Icons.save : Icons.edit),
-          ],
-        ),
-      ),
+    return CustomButton(
+      icon: Icon(isEditingEnabled ? Icons.save : Icons.edit),
+      child: Text(isEditingEnabled ? 'Save' : 'Edit'),
+      onPressed: () {
+        setState(() {
+          isEditingEnabled = !isEditingEnabled;
+          if (isEditingEnabled == false) {
+            _onSaved();
+          }
+        });
+      },
     );
   }
 
