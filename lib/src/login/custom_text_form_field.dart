@@ -9,6 +9,8 @@ class CustomTextFormField extends StatelessWidget {
   final Validator validator;
   final bool obscureText;
   final bool enabled;
+  final String hintText;
+  final TextEditingController controller;
 
   CustomTextFormField({
     this.label,
@@ -17,23 +19,33 @@ class CustomTextFormField extends StatelessWidget {
     this.validator,
     this.obscureText = false,
     this.enabled = true,
+    this.hintText,
+    this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       decoration: InputDecoration(
         suffixIcon: suffixIcon ?? null,
         labelText: label,
         labelStyle: TextStyle(
-          color: Colors.green,
+          color: enabled ? Colors.green : Colors.grey[800],
         ),
         border: OutlineInputBorder(),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.white),
         ),
+        disabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey[800]),
+        ),
+        hintText: hintText,
+        hintStyle: TextStyle(
+          color: enabled ? Colors.green : Colors.grey[800],
+        ),
       ),
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(color: enabled ? Colors.white : Colors.grey[800]),
       onSaved: onSaved,
       validator: validator,
       obscureText: obscureText,

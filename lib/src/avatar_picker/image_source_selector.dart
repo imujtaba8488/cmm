@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'basic_dialog.dart';
+import '../widgets/basic_dialog.dart';
 
 typedef PictureSourceSelected = void Function(PictureSource);
 
