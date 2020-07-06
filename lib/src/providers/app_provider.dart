@@ -237,6 +237,13 @@ class AppProvider extends ChangeNotifier {
     return false;
   }
 
+  void updateUser(User replacementUser) async {
+    _cloud.updateUser(replacementUser: replacementUser);
+    user = replacementUser;
+
+    notifyListeners();
+  }
+
   Future<bool> signIn(String email, String password) async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
 
@@ -272,7 +279,7 @@ class AppProvider extends ChangeNotifier {
     isSignedIn = false;
     currency = 'USD';
     account.reset();
-    pref.clear();
+    await pref.clear();
 
     notifyListeners();
   }

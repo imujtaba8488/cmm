@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
-import 'sign_out_dialog.dart';
+import 'edit_profile_dialog.dart';
 import '../login/login_dialog.dart';
 
 class ProfileView extends StatelessWidget {
@@ -14,12 +14,12 @@ class ProfileView extends StatelessWidget {
           onTap: () => showDialog(
             context: context,
             builder: (context) =>
-                appProvider.isSignedIn ? SignOutDialog() : LoginDialog(),
+                appProvider.isSignedIn ? EditProfileDialog() : LoginDialog(),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              appProvider.user != null
+              appProvider.user != null && appProvider.user.imageUrl != null
                   ? CircleAvatar(
                       backgroundImage: NetworkImage(appProvider.user.imageUrl),
                     )

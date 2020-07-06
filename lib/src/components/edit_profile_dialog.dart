@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cmm/src/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,17 +11,19 @@ import '../avatar_picker/avatar.dart';
 import 'custom_button.dart';
 import '../login/custom_text_form_field.dart';
 
-class SignOutDialog extends StatefulWidget {
+class EditProfileDialog extends StatefulWidget {
   @override
-  _SignOutDialogState createState() => _SignOutDialogState();
+  _EditProfileDialogState createState() => _EditProfileDialogState();
 }
 
-class _SignOutDialogState extends State<SignOutDialog> {
+class _EditProfileDialogState extends State<EditProfileDialog> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool isInEditMode;
-  bool isAnError;
+  bool _isInEditMode;
+  bool _isAnError;
+
   TextEditingController firstNameController,
       lastNameController,
+      passwordController,
       newPasswordController,
       confirmNewPasswordController;
   String firstName, lastName, password, newPassword, confirmNewPassword;
@@ -29,10 +34,11 @@ class _SignOutDialogState extends State<SignOutDialog> {
 
     firstNameController = TextEditingController();
     lastNameController = TextEditingController();
+    passwordController = TextEditingController();
     newPasswordController = TextEditingController();
     confirmNewPasswordController = TextEditingController();
-    isInEditMode = false;
-    isAnError = false;
+    _isInEditMode = false;
+    _isAnError = false;
     firstName = lastName = password = newPassword = confirmNewPassword = '';
   }
 
@@ -53,9 +59,10 @@ class _SignOutDialogState extends State<SignOutDialog> {
                   child: Column(
                     children: <Widget>[
                       Text(
-                        isInEditMode ? 'Save Profile' : 'Edit Profile',
+                        _isInEditMode ? 'Save Profile' : 'Edit Profile',
                         style: TextStyle(
-                          color: isInEditMode ? Colors.grey[600] : Colors.white,
+                          color:
+                              _isInEditMode ? Colors.grey[600] : Colors.white,
                         ),
                       ),
                       Padding(
@@ -65,27 +72,28 @@ class _SignOutDialogState extends State<SignOutDialog> {
                           children: <Widget>[
                             Avatar(
                               networkImage: appProvider.user?.imageUrl,
-                              isSelectionEnabled: isInEditMode,
+                              isSelectionEnabled: _isInEditMode,
                             ),
                             Text(
                               '${appProvider.user?.firstName}${appProvider.user?.lastName}',
                               style: TextStyle(
-                                color: isInEditMode
+                                color: _isInEditMode
                                     ? Colors.white
                                     : Colors.grey[500],
                               ),
                             ),
                             CustomButton(
-                              child: isInEditMode ? Text('Save') : Text('Edit'),
-                              icon: isInEditMode
+                              child:
+                                  _isInEditMode ? Text('Save') : Text('Edit'),
+                              icon: _isInEditMode
                                   ? Icon(Icons.save)
                                   : Icon(Icons.edit),
                               onPressed: () {
                                 onSaved();
 
-                                if (!isAnError) {
+                                if (!_isAnError) {
                                   setState(() {
-                                    isInEditMode = !isInEditMode;
+                                    _isInEditMode = !_isInEditMode;
                                   });
                                 }
                               },
@@ -99,7 +107,7 @@ class _SignOutDialogState extends State<SignOutDialog> {
                           Expanded(
                             child: CustomTextFormField(
                               label: 'First Name',
-                              enabled: isInEditMode,
+                              enabled: _isInEditMode,
                               controller: firstNameController,
                               onSaved: (String value) => firstName = value,
                             ),
@@ -108,7 +116,7 @@ class _SignOutDialogState extends State<SignOutDialog> {
                           Expanded(
                             child: CustomTextFormField(
                               label: 'Last Name',
-                              enabled: isInEditMode,
+                              enabled: _isInEditMode,
                               controller: lastNameController,
                               onSaved: (String value) => lastName = value,
                             ),
@@ -118,7 +126,7 @@ class _SignOutDialogState extends State<SignOutDialog> {
                       SizedBox(height: 8.0),
                       CustomTextFormField(
                         label: 'Password',
-                        enabled: isInEditMode,
+                        enabled: _isInEditMode,
                         onSaved: (String value) => password = value,
                         validator: (String value) {
                           if (!value.contains(appProvider.user.password) &&
@@ -128,18 +136,21 @@ class _SignOutDialogState extends State<SignOutDialog> {
                             return null;
                           }
                         },
+                        controller: passwordController,
+                        obscureText: true,
                       ),
                       SizedBox(height: 8.0),
                       CustomTextFormField(
                         label: 'New Password',
-                        enabled: isInEditMode,
+                        enabled: _isInEditMode,
                         onSaved: (String value) => newPassword = value,
                         controller: newPasswordController,
+                        obscureText: true,
                       ),
                       SizedBox(height: 8.0),
                       CustomTextFormField(
                         label: 'Confirm New Password',
-                        enabled: isInEditMode,
+                        enabled: _isInEditMode,
                         onSaved: (String value) => confirmNewPassword = value,
                         controller: confirmNewPasswordController,
                         validator: (value) {
@@ -154,18 +165,19 @@ class _SignOutDialogState extends State<SignOutDialog> {
                             return 'New and Confirm Password do not match';
                           }
                         },
+                        obscureText: true,
                       ),
-                      isInEditMode ? Container() : SizedBox(height: 10.0),
+                      _isInEditMode ? Container() : SizedBox(height: 10.0),
                     ],
                   ),
                 ),
-                isInEditMode
+                _isInEditMode
                     ? Container()
                     : Divider(
                         color: Colors.white,
                         height: 1.0,
                       ),
-                isInEditMode
+                _isInEditMode
                     ? Container()
                     : Padding(
                         padding: const EdgeInsets.all(10.0),
@@ -196,15 +208,45 @@ class _SignOutDialogState extends State<SignOutDialog> {
   }
 
   void onSaved() {
+    AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
+
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
       setState(() {
-        isAnError = false;
+        _isAnError = false;
       });
+
+      User user = User(
+        firstName: firstName,
+        lastName: lastName,
+        password: newPassword.isEmpty ? appProvider.user.password : newPassword,
+        email: appProvider.user.email,
+        currency: appProvider.user.currency,
+        imageUrl: appProvider.user.imageUrl,
+        id: appProvider.user.id,
+        lowBalanceThreshold: appProvider.user.lowBalanceThreshold,
+      );
+
+      appProvider.updateUser(user);
+
+      passwordController.clear();
+      newPasswordController.clear();
+      confirmNewPasswordController.clear();
+
+      showDialog(
+          context: context,
+          builder: (context) {
+            Future.delayed(Duration(milliseconds: 1500), () {
+              Navigator.pop(context);
+            });
+            return BasicDialog(
+              child: Text('Password Updated!'),
+            );
+          });
     } else {
       setState(() {
-        isAnError = true;
+        _isAnError = true;
       });
     }
   }
