@@ -9,16 +9,37 @@ class LoginDialog extends StatefulWidget {
   _LoginDialogState createState() => _LoginDialogState();
 }
 
-class _LoginDialogState extends State<LoginDialog> {
+class _LoginDialogState extends State<LoginDialog>
+    with SingleTickerProviderStateMixin {
   int activeTab = 0;
+  TabController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TabController(vsync: this, length: 2);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
+    // ! Good Job Mujtaba: 
+    // * Requirement: Change tab index when swiping between tabs.
+    // * It seems flutter does not provide anyway listen to the change in index when swiping between tabs, although onTap() for a TabBar only works when a particular tab is tapped. In this scenerio, scroll metrices are used to detect swipe and the height of the dialog is set accordingly. Swiping dispatches scroll notifications which are handled within the NotificationListener and controller index is set as per the scroll past a certain pixel threshold.
+    return NotificationListener(
+      onNotification: (ScrollNotification notification) {
+        setState(() {
+          if (notification.metrics.pixels <= 100) {
+            controller.index = 0;
+          } else {
+            controller.index = 1;
+          }
+        });
+
+        return true;
+      },
       child: BasicDialog(
         child: Container(
-          height: activeTab == 0
+          height: controller.index == 0
               ? MediaQuery.of(context).size.height / 2.7
               : MediaQuery.of(context).size.height / 1.8,
           padding: const EdgeInsets.all(8.0),
@@ -26,11 +47,7 @@ class _LoginDialogState extends State<LoginDialog> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               TabBar(
-                onTap: (value) {
-                  setState(() {
-                    activeTab = value;
-                  });
-                },
+                controller: controller,
                 tabs: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(5.0),
@@ -44,14 +61,17 @@ class _LoginDialogState extends State<LoginDialog> {
               ),
               Expanded(
                 child: TabBarView(
+                  controller: controller,
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: SignInForm(),
+                      child: SingleChildScrollView(
+                        child: SignInForm(),
+                      ),
                     ),
 
                     // If a container is not displayed during the tab switch to tab0, renderflex error is thrown because of the height change.
-                    activeTab == 0
+                    controller.index == 0
                         ? Container()
                         : Padding(
                             padding: const EdgeInsets.all(8.0),

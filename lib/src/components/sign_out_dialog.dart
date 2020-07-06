@@ -15,7 +15,8 @@ class SignOutDialog extends StatefulWidget {
 
 class _SignOutDialogState extends State<SignOutDialog> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool isEditable;
+  bool isInEditMode;
+  bool isAnError;
   TextEditingController firstNameController,
       lastNameController,
       newPasswordController,
@@ -30,7 +31,8 @@ class _SignOutDialogState extends State<SignOutDialog> {
     lastNameController = TextEditingController();
     newPasswordController = TextEditingController();
     confirmNewPasswordController = TextEditingController();
-    isEditable = false;
+    isInEditMode = false;
+    isAnError = false;
     firstName = lastName = password = newPassword = confirmNewPassword = '';
   }
 
@@ -42,132 +44,151 @@ class _SignOutDialogState extends State<SignOutDialog> {
         lastNameController.text = appProvider.user?.lastName;
 
         return BasicDialog(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      isEditable ? 'Save Profile' : 'Edit Profile',
-                      style: TextStyle(
-                        color: isEditable ? Colors.grey[600] : Colors.white,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        isInEditMode ? 'Save Profile' : 'Edit Profile',
+                        style: TextStyle(
+                          color: isInEditMode ? Colors.grey[600] : Colors.white,
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Avatar(
+                              networkImage: appProvider.user?.imageUrl,
+                              isSelectionEnabled: isInEditMode,
+                            ),
+                            Text(
+                              '${appProvider.user?.firstName}${appProvider.user?.lastName}',
+                              style: TextStyle(
+                                color: isInEditMode
+                                    ? Colors.white
+                                    : Colors.grey[500],
+                              ),
+                            ),
+                            CustomButton(
+                              child: isInEditMode ? Text('Save') : Text('Edit'),
+                              icon: isInEditMode
+                                  ? Icon(Icons.save)
+                                  : Icon(Icons.edit),
+                              onPressed: () {
+                                onSaved();
+
+                                if (!isAnError) {
+                                  setState(() {
+                                    isInEditMode = !isInEditMode;
+                                  });
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 15.0),
+                      Row(
                         children: <Widget>[
-                          Avatar(
-                            networkImage: appProvider.user?.imageUrl,
-                            isSelectionEnabled: isEditable,
-                          ),
-                          Text(
-                            '${appProvider.user?.firstName}${appProvider.user?.lastName}',
-                            style: TextStyle(
-                              color:
-                                  isEditable ? Colors.white : Colors.grey[500],
+                          Expanded(
+                            child: CustomTextFormField(
+                              label: 'First Name',
+                              enabled: isInEditMode,
+                              controller: firstNameController,
+                              onSaved: (String value) => firstName = value,
                             ),
                           ),
-                          CustomButton(
-                            child: isEditable ? Text('Save') : Text('Edit'),
-                            icon: isEditable
-                                ? Icon(Icons.save)
-                                : Icon(Icons.edit),
-                            onPressed: () {
-                              setState(() {
-                                isEditable = !isEditable;
-                              });
-                            },
+                          SizedBox(width: 5.0),
+                          Expanded(
+                            child: CustomTextFormField(
+                              label: 'Last Name',
+                              enabled: isInEditMode,
+                              controller: lastNameController,
+                              onSaved: (String value) => lastName = value,
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    SizedBox(height: 15.0),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: CustomTextFormField(
-                            label: 'First Name',
-                            enabled: isEditable,
-                            controller: firstNameController,
-                            onSaved: (String value) => firstName = value,
-                          ),
-                        ),
-                        SizedBox(width: 5.0),
-                        Expanded(
-                          child: CustomTextFormField(
-                            label: 'Last Name',
-                            enabled: isEditable,
-                            controller: lastNameController,
-                            onSaved: (String value) => lastName = value,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 5.0),
-                    CustomTextFormField(
-                      label: 'Password',
-                      enabled: isEditable,
-                      onSaved: (String value) => password = value,
-                    ),
-                    SizedBox(height: 5.0),
-                    CustomTextFormField(
-                      label: 'New Password',
-                      enabled: isEditable,
-                      onSaved: (String value) => newPassword = value,
-                      controller: newPasswordController,
-                    ),
-                    SizedBox(height: 5.0),
-                    CustomTextFormField(
-                      label: 'Confirm New Password',
-                      enabled: isEditable,
-                      onSaved: (String value) => confirmNewPassword = value,
-                      controller: confirmNewPasswordController,
-                      validator: (value) {
-                        if (value.contains(newPasswordController.text) &&
-                            value.length == newPasswordController.text.length) {
-                          return null;
-                        } else {
-                          return 'New and Confirm Password do not match';
-                        }
-                      },
-                    ),
-                    isEditable ? Container() : SizedBox(height: 10.0),
-                  ],
-                ),
-              ),
-              isEditable
-                  ? Container()
-                  : Divider(
-                      color: Colors.white,
-                      height: 1.0,
-                    ),
-              isEditable
-                  ? Container()
-                  : Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: InkWell(
-                        onTap: () {
-                          appProvider.signOut();
-                          Navigator.pop(context);
-
-                          showDialog(
-                            context: context,
-                            builder: (context) => LoginDialog(),
-                          );
+                      SizedBox(height: 8.0),
+                      CustomTextFormField(
+                        label: 'Password',
+                        enabled: isInEditMode,
+                        onSaved: (String value) => password = value,
+                        validator: (String value) {
+                          if (!value.contains(appProvider.user.password) &&
+                              value.length > 0) {
+                            return 'Incorrect Password!';
+                          } else {
+                            return null;
+                          }
                         },
-                        child: Text(
-                          'Sign Out!',
-                          style: TextStyle(
-                            color: Colors.green,
+                      ),
+                      SizedBox(height: 8.0),
+                      CustomTextFormField(
+                        label: 'New Password',
+                        enabled: isInEditMode,
+                        onSaved: (String value) => newPassword = value,
+                        controller: newPasswordController,
+                      ),
+                      SizedBox(height: 8.0),
+                      CustomTextFormField(
+                        label: 'Confirm New Password',
+                        enabled: isInEditMode,
+                        onSaved: (String value) => confirmNewPassword = value,
+                        controller: confirmNewPasswordController,
+                        validator: (value) {
+                          if (value.contains(newPasswordController.text) &&
+                              value.length ==
+                                  newPasswordController.text.length) {
+                            return null;
+                          } else if (newPasswordController.text.length > 0 &&
+                              value.isEmpty) {
+                            return '* Required';
+                          } else {
+                            return 'New and Confirm Password do not match';
+                          }
+                        },
+                      ),
+                      isInEditMode ? Container() : SizedBox(height: 10.0),
+                    ],
+                  ),
+                ),
+                isInEditMode
+                    ? Container()
+                    : Divider(
+                        color: Colors.white,
+                        height: 1.0,
+                      ),
+                isInEditMode
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: InkWell(
+                          onTap: () {
+                            appProvider.signOut();
+                            Navigator.pop(context);
+
+                            showDialog(
+                              context: context,
+                              builder: (context) => LoginDialog(),
+                            );
+                          },
+                          child: Text(
+                            'Sign Out!',
+                            style: TextStyle(
+                              color: Colors.green,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -176,10 +197,15 @@ class _SignOutDialogState extends State<SignOutDialog> {
 
   void onSaved() {
     if (_formKey.currentState.validate()) {
-      isEditable = false;
       _formKey.currentState.save();
+
+      setState(() {
+        isAnError = false;
+      });
     } else {
-      isEditable = true;
+      setState(() {
+        isAnError = true;
+      });
     }
   }
 }
