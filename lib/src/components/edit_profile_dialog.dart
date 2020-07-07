@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
-import '../widgets/basic_dialog.dart';
+import '../widgets/app_dialog.dart';
 import '../login/login_dialog.dart';
 import '../avatar_picker/avatar.dart';
 import 'custom_button.dart';
@@ -19,7 +19,6 @@ class EditProfileDialog extends StatefulWidget {
 class _EditProfileDialogState extends State<EditProfileDialog> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isInEditMode;
-  bool _isAnError;
 
   TextEditingController firstNameController,
       lastNameController,
@@ -38,7 +37,6 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     newPasswordController = TextEditingController();
     confirmNewPasswordController = TextEditingController();
     _isInEditMode = false;
-    _isAnError = false;
     firstName = lastName = password = newPassword = confirmNewPassword = '';
   }
 
@@ -49,7 +47,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
         firstNameController.text = appProvider.user?.firstName;
         lastNameController.text = appProvider.user?.lastName;
 
-        return BasicDialog(
+        return AppDialog(
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -89,12 +87,13 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                                   ? Icon(Icons.save)
                                   : Icon(Icons.edit),
                               onPressed: () {
-                                onSaved();
+                                setState(() {
+                                  _isInEditMode = !_isInEditMode;
+                                });
 
-                                if (!_isAnError) {
-                                  setState(() {
-                                    _isInEditMode = !_isInEditMode;
-                                  });
+                                // onSaved() only needs to be called when user taps on save and not on edit.
+                                if (!_isInEditMode) {
+                                  _onSaved();
                                 }
                               },
                             ),
@@ -109,7 +108,8 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                               label: 'First Name',
                               enabled: _isInEditMode,
                               controller: firstNameController,
-                              onSaved: (String value) => firstName = value,
+                              onSaved: (String value) =>
+                                  firstName = value.trim(),
                             ),
                           ),
                           SizedBox(width: 5.0),
@@ -118,7 +118,8 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                               label: 'Last Name',
                               enabled: _isInEditMode,
                               controller: lastNameController,
-                              onSaved: (String value) => lastName = value,
+                              onSaved: (String value) =>
+                                  lastName = value.trim(),
                             ),
                           ),
                         ],
@@ -127,15 +128,8 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                       CustomTextFormField(
                         label: 'Password',
                         enabled: _isInEditMode,
-                        onSaved: (String value) => password = value,
-                        validator: (String value) {
-                          if (!value.contains(appProvider.user.password) &&
-                              value.length > 0) {
-                            return 'Incorrect Password!';
-                          } else {
-                            return null;
-                          }
-                        },
+                        onSaved: (String value) => password = value.trim(),
+                        validator: _passwordValidator,
                         controller: passwordController,
                         obscureText: true,
                       ),
@@ -143,7 +137,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                       CustomTextFormField(
                         label: 'New Password',
                         enabled: _isInEditMode,
-                        onSaved: (String value) => newPassword = value,
+                        onSaved: (String value) => newPassword = value.trim(),
                         controller: newPasswordController,
                         obscureText: true,
                       ),
@@ -151,20 +145,10 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                       CustomTextFormField(
                         label: 'Confirm New Password',
                         enabled: _isInEditMode,
-                        onSaved: (String value) => confirmNewPassword = value,
+                        onSaved: (String value) =>
+                            confirmNewPassword = value.trim(),
                         controller: confirmNewPasswordController,
-                        validator: (value) {
-                          if (value.contains(newPasswordController.text) &&
-                              value.length ==
-                                  newPasswordController.text.length) {
-                            return null;
-                          } else if (newPasswordController.text.length > 0 &&
-                              value.isEmpty) {
-                            return '* Required';
-                          } else {
-                            return 'New and Confirm Password do not match';
-                          }
-                        },
+                        validator: _confirmNewPasswordValidator,
                         obscureText: true,
                       ),
                       _isInEditMode ? Container() : SizedBox(height: 10.0),
@@ -207,15 +191,11 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     );
   }
 
-  void onSaved() {
+  void _onSaved() {
     AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
 
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-
-      setState(() {
-        _isAnError = false;
-      });
 
       User user = User(
         firstName: firstName,
@@ -230,24 +210,62 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
 
       appProvider.updateUser(user);
 
-      passwordController.clear();
-      newPasswordController.clear();
-      confirmNewPasswordController.clear();
+      Navigator.pop(context);
 
-      showDialog(
+      if (newPasswordController.text.isNotEmpty &&
+          confirmNewPasswordController.text.isNotEmpty) {
+        showDialog(
           context: context,
           builder: (context) {
             Future.delayed(Duration(milliseconds: 1500), () {
               Navigator.pop(context);
             });
-            return BasicDialog(
-              child: Text('Password Updated!'),
+            return AppDialog(
+              child: Text('Profile Updated!'),
             );
-          });
+          },
+        );
+      }
     } else {
+      // In case of an error do not exit the edit mode.
       setState(() {
-        _isAnError = true;
+        _isInEditMode = true;
       });
     }
+  }
+
+  String _passwordValidator(String value) {
+    if (value.isEmpty) {
+      return null;
+    } else if (_isPasswordCorrect(value)) {
+      return null;
+    } else {
+      return 'Incorrect Password!';
+    }
+  }
+
+  String _confirmNewPasswordValidator(String value) {
+    if (value.isEmpty &&
+        newPasswordController.text.isEmpty &&
+        confirmNewPasswordController.text.isEmpty) {
+      return null;
+    } else if (value.contains(newPasswordController.text) &&
+        value.length == newPasswordController.text.length &&
+        _isPasswordCorrect(passwordController.text)) {
+      return null;
+    } else if (value.contains(newPasswordController.text) &&
+        value.length == newPasswordController.text.length &&
+        passwordController.text.isEmpty) {
+      return 'Password cannot be empty.';
+    } else {
+      return 'New and Confirm New Passwords do not match.';
+    }
+  }
+
+  bool _isPasswordCorrect(String value) {
+    AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
+
+    return appProvider.user.password.length == value.length &&
+        appProvider.user.password.contains(value);
   }
 }

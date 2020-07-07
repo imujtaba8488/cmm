@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class BasicDialog extends StatelessWidget {
+class AppDialog extends StatelessWidget {
   final Widget child;
   final double height;
   final bool hasRoundedCorners;
   final double borderWidth;
 
-  BasicDialog({
+  AppDialog({
     this.child,
     this.height,
     this.hasRoundedCorners = true,

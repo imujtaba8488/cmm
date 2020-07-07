@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/basic_dialog.dart';
+import '../widgets/app_dialog.dart';
 
 typedef PictureSourceSelected = void Function(PictureSource);
 
@@ -11,7 +11,7 @@ class ImageSourceSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasicDialog(
+    return AppDialog(
       hasRoundedCorners: false,
       borderWidth: 0.5,
       child: Row(

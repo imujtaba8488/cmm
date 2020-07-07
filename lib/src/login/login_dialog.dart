@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/basic_dialog.dart';
+import '../widgets/app_dialog.dart';
 import 'sign_in_form.dart';
 import 'sign_up_form.dart';
 
@@ -37,7 +37,7 @@ class _LoginDialogState extends State<LoginDialog>
 
         return true;
       },
-      child: BasicDialog(
+      child: AppDialog(
         child: Container(
           height: controller.index == 0
               ? MediaQuery.of(context).size.height / 2.7

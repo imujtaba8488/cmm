@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/basic_dialog.dart';
+import '../widgets/app_dialog.dart';
 import '../providers/app_provider.dart';
 
 class SetLowBalanceThresholdDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BasicDialog(
+    return AppDialog(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
