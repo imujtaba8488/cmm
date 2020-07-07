@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cmm/src/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +8,7 @@ import '../login/login_dialog.dart';
 import '../avatar_picker/avatar.dart';
 import 'custom_button.dart';
 import '../login/custom_text_form_field.dart';
+import '../widgets/toast.dart';
 
 class EditProfileDialog extends StatefulWidget {
   @override
@@ -20,32 +19,32 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isInEditMode;
 
-  TextEditingController firstNameController,
-      lastNameController,
-      passwordController,
-      newPasswordController,
-      confirmNewPasswordController;
-  String firstName, lastName, password, newPassword, confirmNewPassword;
+  TextEditingController _firstNameController,
+      _lastNameController,
+      _passwordController,
+      _newPasswordController,
+      _confirmNewPasswordController;
+  String _firstName, _lastName, _newPassword;
 
   @override
   void initState() {
     super.initState();
 
-    firstNameController = TextEditingController();
-    lastNameController = TextEditingController();
-    passwordController = TextEditingController();
-    newPasswordController = TextEditingController();
-    confirmNewPasswordController = TextEditingController();
+    _firstNameController = TextEditingController();
+    _lastNameController = TextEditingController();
+    _passwordController = TextEditingController();
+    _newPasswordController = TextEditingController();
+    _confirmNewPasswordController = TextEditingController();
     _isInEditMode = false;
-    firstName = lastName = password = newPassword = confirmNewPassword = '';
+    _firstName = _lastName = _newPassword = '';
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<AppProvider>(
       builder: (context, appProvider, child) {
-        firstNameController.text = appProvider.user?.firstName;
-        lastNameController.text = appProvider.user?.lastName;
+        _firstNameController.text = appProvider.user?.firstName;
+        _lastNameController.text = appProvider.user?.lastName;
 
         return AppDialog(
           child: SingleChildScrollView(
@@ -72,12 +71,17 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                               networkImage: appProvider.user?.imageUrl,
                               isSelectionEnabled: _isInEditMode,
                             ),
-                            Text(
-                              '${appProvider.user?.firstName}${appProvider.user?.lastName}',
-                              style: TextStyle(
-                                color: _isInEditMode
-                                    ? Colors.white
-                                    : Colors.grey[500],
+                            SizedBox(width: 5.0),
+                            Expanded(
+                              child: FittedBox(
+                                child: Text(
+                                  '${appProvider.user?.firstName} ${appProvider.user?.lastName}',
+                                  style: TextStyle(
+                                    color: _isInEditMode
+                                        ? Colors.white
+                                        : Colors.grey[500],
+                                  ),
+                                ),
                               ),
                             ),
                             CustomButton(
@@ -107,9 +111,9 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                             child: CustomTextFormField(
                               label: 'First Name',
                               enabled: _isInEditMode,
-                              controller: firstNameController,
+                              controller: _firstNameController,
                               onSaved: (String value) =>
-                                  firstName = value.trim(),
+                                  _firstName = value.trim(),
                             ),
                           ),
                           SizedBox(width: 5.0),
@@ -117,9 +121,9 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                             child: CustomTextFormField(
                               label: 'Last Name',
                               enabled: _isInEditMode,
-                              controller: lastNameController,
+                              controller: _lastNameController,
                               onSaved: (String value) =>
-                                  lastName = value.trim(),
+                                  _lastName = value.trim(),
                             ),
                           ),
                         ],
@@ -128,26 +132,24 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                       CustomTextFormField(
                         label: 'Password',
                         enabled: _isInEditMode,
-                        onSaved: (String value) => password = value.trim(),
                         validator: _passwordValidator,
-                        controller: passwordController,
+                        controller: _passwordController,
                         obscureText: true,
                       ),
                       SizedBox(height: 8.0),
                       CustomTextFormField(
                         label: 'New Password',
                         enabled: _isInEditMode,
-                        onSaved: (String value) => newPassword = value.trim(),
-                        controller: newPasswordController,
+                        onSaved: (String value) => _newPassword = value.trim(),
+                        controller: _newPasswordController,
                         obscureText: true,
+                        validator: _newPasswordValidator,
                       ),
                       SizedBox(height: 8.0),
                       CustomTextFormField(
                         label: 'Confirm New Password',
                         enabled: _isInEditMode,
-                        onSaved: (String value) =>
-                            confirmNewPassword = value.trim(),
-                        controller: confirmNewPasswordController,
+                        controller: _confirmNewPasswordController,
                         validator: _confirmNewPasswordValidator,
                         obscureText: true,
                       ),
@@ -197,34 +199,25 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      User user = User(
-        firstName: firstName,
-        lastName: lastName,
-        password: newPassword.isEmpty ? appProvider.user.password : newPassword,
-        email: appProvider.user.email,
-        currency: appProvider.user.currency,
-        imageUrl: appProvider.user.imageUrl,
-        id: appProvider.user.id,
-        lowBalanceThreshold: appProvider.user.lowBalanceThreshold,
-      );
-
-      appProvider.updateUser(user);
-
       Navigator.pop(context);
 
-      if (newPasswordController.text.isNotEmpty &&
-          confirmNewPasswordController.text.isNotEmpty) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            Future.delayed(Duration(milliseconds: 1500), () {
-              Navigator.pop(context);
-            });
-            return AppDialog(
-              child: Text('Profile Updated!'),
-            );
-          },
+      if (_newPasswordController.text.isNotEmpty &&
+          _confirmNewPasswordController.text.isNotEmpty) {
+        User user = User(
+          firstName: _firstName,
+          lastName: _lastName,
+          password:
+              _newPassword.isEmpty ? appProvider.user.password : _newPassword,
+          email: appProvider.user.email,
+          currency: appProvider.user.currency,
+          imageUrl: appProvider.user.imageUrl,
+          id: appProvider.user.id,
+          lowBalanceThreshold: appProvider.user.lowBalanceThreshold,
         );
+
+        appProvider.updateUser(user);
+
+        showToast(context: context, message: 'Profile Updated!');
       }
     } else {
       // In case of an error do not exit the edit mode.
@@ -244,18 +237,27 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     }
   }
 
+  String _newPasswordValidator(String value) {
+    print(value);
+    if (value.length > 0 && value.length < 6) {
+      return 'Password must be 6 characters long.';
+    } else {
+      return null;
+    }
+  }
+
   String _confirmNewPasswordValidator(String value) {
     if (value.isEmpty &&
-        newPasswordController.text.isEmpty &&
-        confirmNewPasswordController.text.isEmpty) {
+        _newPasswordController.text.isEmpty &&
+        _confirmNewPasswordController.text.isEmpty) {
       return null;
-    } else if (value.contains(newPasswordController.text) &&
-        value.length == newPasswordController.text.length &&
-        _isPasswordCorrect(passwordController.text)) {
+    } else if (value.contains(_newPasswordController.text) &&
+        value.length == _newPasswordController.text.length &&
+        _isPasswordCorrect(_passwordController.text)) {
       return null;
-    } else if (value.contains(newPasswordController.text) &&
-        value.length == newPasswordController.text.length &&
-        passwordController.text.isEmpty) {
+    } else if (value.contains(_newPasswordController.text) &&
+        value.length == _newPasswordController.text.length &&
+        _passwordController.text.isEmpty) {
       return 'Password cannot be empty.';
     } else {
       return 'New and Confirm New Passwords do not match.';

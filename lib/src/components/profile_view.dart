@@ -29,7 +29,7 @@ class ProfileView extends StatelessWidget {
               SizedBox(width: 5.0),
               appProvider.user != null
                   ? Text(
-                      '${appProvider.user.firstName}${appProvider.user.lastName}',
+                      '${appProvider.user.firstName} ${appProvider.user.lastName}',
                     )
                   : Container(),
             ],

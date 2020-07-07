@@ -109,4 +109,16 @@ class _SignInFormState extends State<SignInForm> {
       }
     }
   }
+
+  // String _emailValidator(String value) {
+  //   if (value.isEmpty) {
+  //     return 'Email cannot be empty.';
+  //   } else {
+  //     return null;
+  //   }
+  // }
+
+  // String _passwordValidator(String value) {
+  //   if (value.)
+  // }
 }
