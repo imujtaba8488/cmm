@@ -252,8 +252,8 @@ class AppProvider extends ChangeNotifier {
     bool signInSuccess = false;
 
     allUsers.forEach((User userOnCloud) {
-      if (userOnCloud.email.contains(email) &&
-          userOnCloud.password.contains(password)) {
+
+      if (userOnCloud.email == email && userOnCloud.password == password) {
         this.user = userOnCloud;
         signInSuccess = true;
 

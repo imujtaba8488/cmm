@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'custom_text_form_field.dart';
 import '../providers/app_provider.dart';
+import '../widgets/toast.dart';
 
 class SignInForm extends StatefulWidget {
   SignInForm({Key key}) : super(key: key);
@@ -41,7 +42,8 @@ class _SignInFormState extends State<SignInForm> {
                     Icons.email,
                     color: Colors.green,
                   ),
-                  onSaved: (value) => _email = value,
+                  onSaved: (value) => _email = value.trim(),
+                  validator: _emailValidator,
                 ),
               ),
               Padding(
@@ -52,7 +54,9 @@ class _SignInFormState extends State<SignInForm> {
                     Icons.lock,
                     color: Colors.green,
                   ),
-                  onSaved: (value) => _password = _password,
+                  onSaved: (value) => _password = value.trim(),
+                  validator: _passwordValidator,
+                  obscureText: true,
                 ),
               ),
               Padding(
@@ -106,19 +110,29 @@ class _SignInFormState extends State<SignInForm> {
 
       if (signedIn) {
         Navigator.pop(context);
+      } else {
+        showToast(
+          context: context,
+          message: 'Error: Invalid email or password!',
+          duration: Duration(milliseconds: 2000),
+        );
       }
     }
   }
 
-  // String _emailValidator(String value) {
-  //   if (value.isEmpty) {
-  //     return 'Email cannot be empty.';
-  //   } else {
-  //     return null;
-  //   }
-  // }
+  String _emailValidator(String value) {
+    if (value.isEmpty) {
+      return 'Email cannot be empty.';
+    } else {
+      return null;
+    }
+  }
 
-  // String _passwordValidator(String value) {
-  //   if (value.)
-  // }
+  String _passwordValidator(String value) {
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long.';
+    } else {
+      return null;
+    }
+  }
 }

@@ -14,10 +14,11 @@ void showToast({
         Navigator.pop(context);
       });
       return AppDialog(
-        child: Center(
-          child: Text('Profile Updated!'),
-        ),
+        child: Text(message),
       );
     },
   );
 }
+
+
+// Todo: Add animations such as fade in and fade out later on!
