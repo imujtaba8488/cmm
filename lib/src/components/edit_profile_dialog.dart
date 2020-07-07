@@ -173,6 +173,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                             Navigator.pop(context);
 
                             showDialog(
+                              barrierDismissible: false,
                               context: context,
                               builder: (context) => LoginDialog(),
                             );

@@ -12,6 +12,7 @@ class ProfileView extends StatelessWidget {
       builder: (context, appProvider, child) {
         return InkWell(
           onTap: () => showDialog(
+            barrierDismissible: false,
             context: context,
             builder: (context) =>
                 appProvider.isSignedIn ? EditProfileDialog() : LoginDialog(),

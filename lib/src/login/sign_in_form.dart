@@ -102,7 +102,7 @@ class _SignInFormState extends State<SignInForm> {
         _isSigningIn = true;
       });
 
-      bool signedIn = await appProvider.signIn(_email, _password);
+      bool signedIn = await appProvider.signIn(_email.toLowerCase(), _password);
 
       setState(() {
         _isSigningIn = false;
@@ -123,7 +123,7 @@ class _SignInFormState extends State<SignInForm> {
   String _emailValidator(String value) {
     if (value.isEmpty) {
       return 'Email cannot be empty.';
-    } else {
+    }  else {
       return null;
     }
   }
