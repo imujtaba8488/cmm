@@ -237,8 +237,8 @@ class AppProvider extends ChangeNotifier {
     return false;
   }
 
-  void updateUser(User replacementUser) async {
-    _cloud.updateUser(replacementUser: replacementUser);
+  void updateUser(User replacementUser, {File imageFile}) async {
+    await _cloud.updateUser(replacementUser: replacementUser, imageFile: imageFile);
     user = replacementUser;
 
     notifyListeners();

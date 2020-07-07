@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import 'custom_text_form_field.dart';
 import '../avatar_picker/avatar.dart';
+import '../widgets/toast.dart';
 
 class SignUpForm extends StatefulWidget {
   final bool enabled;
@@ -26,6 +27,8 @@ class _SignUpFormState extends State<SignUpForm> {
 
   File imagefile;
 
+  bool isSigningUp;
+
   @override
   void initState() {
     super.initState();
@@ -33,6 +36,8 @@ class _SignUpFormState extends State<SignUpForm> {
     _firstName = _lastName = _email = _password = '';
 
     imagePath = 'assets/test.jpg';
+
+    isSigningUp = false;
   }
 
   @override
@@ -41,7 +46,11 @@ class _SignUpFormState extends State<SignUpForm> {
       key: _signUpFormKey,
       child: Column(
         children: <Widget>[
-          Avatar(),
+          Avatar(
+            onCapture: (url, file) {
+              imagefile = file;
+            },
+          ),
           Row(
             children: <Widget>[
               Expanded(
@@ -74,16 +83,8 @@ class _SignUpFormState extends State<SignUpForm> {
                 Icons.email,
                 color: Colors.green,
               ),
-              onSaved: (value) => _email = value,
-              validator: (String value) {
-                if (value.isEmpty) {
-                  return '*Required.';
-                } else if (!value.contains('@')) {
-                  return 'Enter a valid Email.';
-                } else {
-                  return null;
-                }
-              },
+              onSaved: (value) => _email = value.trim(),
+              validator: _emailValidator,
               enabled: widget.enabled,
             ),
           ),
@@ -95,24 +96,24 @@ class _SignUpFormState extends State<SignUpForm> {
                 Icons.lock,
                 color: Colors.green,
               ),
-              onSaved: (value) => _password = value,
-              validator: (String value) {
-                if (value.isEmpty) {
-                  return '*Required.';
-                } else if (value.length < 6) {
-                  return 'Password must be 6 characters long.';
-                } else {
-                  return null;
-                }
-              },
+              onSaved: (value) => _password = value.trim(),
+              validator: _passwordValidator,
               enabled: widget.enabled,
+              obscureText: true,
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
+                isSigningUp
+                    ? Expanded(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : Container(),
                 OutlineButton(
                   borderSide: BorderSide(color: Colors.white),
                   shape: RoundedRectangleBorder(
@@ -140,8 +141,12 @@ class _SignUpFormState extends State<SignUpForm> {
     if (_signUpFormKey.currentState.validate()) {
       _signUpFormKey.currentState.save();
 
+      setState(() {
+        isSigningUp = true;
+      });
+
       bool signedUpAndIn = await appProvider.addUser(
-        email: _email,
+        email: _email.toLowerCase(),
         password: _password,
         firstName: _firstName,
         lastName: _lastName,
@@ -150,8 +155,47 @@ class _SignUpFormState extends State<SignUpForm> {
 
       if (signedUpAndIn) {
         await appProvider.signIn(_email, _password);
+
+        setState(() {
+          isSigningUp = false;
+        });
+
         Navigator.pop(context);
+      } else {
+        showToast(
+          context: context,
+          message: 'Email already in use!',
+          duration: Duration(milliseconds: 2000),
+        );
+
+        setState(() {
+          isSigningUp = false;
+        });
       }
+    }
+  }
+
+  String _emailValidator(String value) {
+    if (value.isEmpty) {
+      return '*Required.';
+    } else if (!value.contains('@')) {
+      return 'Enter a valid Email.';
+    } else if (value.contains(' ')) {
+      return 'Email cannot contain a space.';
+    } else {
+      return null;
+    }
+  }
+
+  String _passwordValidator(String value) {
+    if (value.isEmpty) {
+      return '*Required.';
+    } else if (value.length < 6) {
+      return 'Password must be 6 characters long.';
+    } else if (value.contains(' ')) {
+      return 'Password cannot contain a space.';
+    } else {
+      return null;
     }
   }
 }

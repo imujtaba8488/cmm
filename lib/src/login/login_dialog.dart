@@ -41,7 +41,7 @@ class _LoginDialogState extends State<LoginDialog>
         child: Container(
           height: controller.index == 0
               ? MediaQuery.of(context).size.height / 2.4
-              : MediaQuery.of(context).size.height / 1.8,
+              : MediaQuery.of(context).size.height / 1.68,
           padding: const EdgeInsets.all(8.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,

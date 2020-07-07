@@ -87,7 +87,9 @@ class _AvatarState extends State<Avatar> {
           imagePath = pickedFile.path;
         });
 
-        widget.onCapture(imagePath, imageFile);
+        if (widget.onCapture != null) {
+          widget.onCapture(imagePath, imageFile);
+        }
       }
     }
   }

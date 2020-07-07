@@ -14,11 +14,16 @@ void showToast({
         Navigator.pop(context);
       });
       return AppDialog(
-        child: Text(message),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(message),
+          ],
+        ),
       );
     },
   );
 }
-
 
 // Todo: Add animations such as fade in and fade out later on!

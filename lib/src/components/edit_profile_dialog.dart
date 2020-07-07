@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cmm/src/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +27,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
       _newPasswordController,
       _confirmNewPasswordController;
   String _firstName, _lastName, _newPassword;
+  File imageFile;
 
   @override
   void initState() {
@@ -70,6 +73,9 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                             Avatar(
                               networkImage: appProvider.user?.imageUrl,
                               isSelectionEnabled: _isInEditMode,
+                              onCapture: (url, file) {
+                                imageFile = file;
+                              },
                             ),
                             SizedBox(width: 5.0),
                             Expanded(
@@ -202,24 +208,21 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
 
       Navigator.pop(context);
 
-      if (_newPasswordController.text.isNotEmpty &&
-          _confirmNewPasswordController.text.isNotEmpty) {
-        User user = User(
-          firstName: _firstName,
-          lastName: _lastName,
-          password:
-              _newPassword.isEmpty ? appProvider.user.password : _newPassword,
-          email: appProvider.user.email,
-          currency: appProvider.user.currency,
-          imageUrl: appProvider.user.imageUrl,
-          id: appProvider.user.id,
-          lowBalanceThreshold: appProvider.user.lowBalanceThreshold,
-        );
+      User user = User(
+        firstName: _firstName,
+        lastName: _lastName,
+        password:
+            _newPassword.isEmpty ? appProvider.user.password : _newPassword,
+        email: appProvider.user.email,
+        currency: appProvider.user.currency,
+        imageUrl: appProvider.user.imageUrl,
+        id: appProvider.user.id,
+        lowBalanceThreshold: appProvider.user.lowBalanceThreshold,
+      );
 
-        appProvider.updateUser(user);
+      appProvider.updateUser(user, imageFile: imageFile);
 
-        showToast(context: context, message: 'Profile Updated!');
-      }
+      showToast(context: context, message: 'Profile Updated!');
     } else {
       // In case of an error do not exit the edit mode.
       setState(() {

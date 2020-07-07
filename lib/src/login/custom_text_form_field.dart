@@ -11,6 +11,7 @@ class CustomTextFormField extends StatelessWidget {
   final bool enabled;
   final String hintText;
   final TextEditingController controller;
+  final TextInputType keyboardType;
 
   CustomTextFormField({
     this.label,
@@ -21,6 +22,7 @@ class CustomTextFormField extends StatelessWidget {
     this.enabled = true,
     this.hintText,
     this.controller,
+    this.keyboardType
   });
 
   @override
@@ -50,6 +52,7 @@ class CustomTextFormField extends StatelessWidget {
       validator: validator,
       obscureText: obscureText,
       enabled: enabled,
+      keyboardType: keyboardType,
     );
   }
 }

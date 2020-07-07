@@ -77,9 +77,27 @@ class Cloud {
     return allUsers;
   }
 
-  void updateUser({User replacementUser}) {
+  Future<bool> updateUser({User replacementUser, File imageFile}) async {
+    String imageUrl;
+
+    if (imageFile != null) {
+      StorageReference storageReference =
+          FirebaseStorage.instance.ref().child(replacementUser.email);
+
+      StorageUploadTask uploadTask = storageReference.putFile(imageFile);
+      await uploadTask.onComplete;
+
+      imageUrl = await storageReference.getDownloadURL();
+    }
+
+    if (imageUrl != null) {
+      replacementUser.imageUrl = imageUrl;
+    }
+
     _firestore.collection('users').document(replacementUser.id).setData(
           replacementUser.asMap(),
         );
+
+    return true;
   }
 }

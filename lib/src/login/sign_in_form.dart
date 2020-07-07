@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'custom_text_form_field.dart';
@@ -28,67 +29,66 @@ class _SignInFormState extends State<SignInForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Form(
-          key: _signInFormKey,
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CustomTextFormField(
-                  label: 'Email',
-                  suffixIcon: Icon(
-                    Icons.email,
-                    color: Colors.green,
-                  ),
-                  onSaved: (value) => _email = value.trim(),
-                  validator: _emailValidator,
-                ),
+    return Form(
+      key: _signInFormKey,
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CustomTextFormField(
+              label: 'Email',
+              suffixIcon: Icon(
+                Icons.email,
+                color: Colors.green,
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CustomTextFormField(
-                  label: 'Password',
-                  suffixIcon: Icon(
-                    Icons.lock,
-                    color: Colors.green,
-                  ),
-                  onSaved: (value) => _password = value.trim(),
-                  validator: _passwordValidator,
-                  obscureText: true,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    OutlineButton(
-                      borderSide: BorderSide(color: Colors.white),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50.0),
-                      ),
-                      child: Text(
-                        'Sign In',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      onPressed: onSignIn,
-                    ),
-                  ],
-                ),
-              )
-            ],
+              onSaved: (value) => _email = value.trim(),
+              validator: _emailValidator,
+              keyboardType: TextInputType.emailAddress,
+            ),
           ),
-        ),
-        _isSigningIn
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Container(),
-      ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CustomTextFormField(
+              label: 'Password',
+              suffixIcon: Icon(
+                Icons.lock,
+                color: Colors.green,
+              ),
+              onSaved: (value) => _password = value.trim(),
+              validator: _passwordValidator,
+              obscureText: true,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _isSigningIn
+                    ? Expanded(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : Container(),
+                OutlineButton(
+                  borderSide: BorderSide(color: Colors.white),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  child: Text(
+                    'Sign In',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: onSignIn,
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -123,7 +123,7 @@ class _SignInFormState extends State<SignInForm> {
   String _emailValidator(String value) {
     if (value.isEmpty) {
       return 'Email cannot be empty.';
-    }  else {
+    } else {
       return null;
     }
   }
