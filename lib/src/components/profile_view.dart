@@ -25,7 +25,7 @@ class ProfileView extends StatelessWidget {
                       backgroundImage: NetworkImage(appProvider.user.imageUrl),
                     )
                   : CircleAvatar(
-                      backgroundImage: AssetImage('assets/test.jpg'),
+                      backgroundImage: AssetImage('assets/images/default_avatar.png'),
                     ),
               SizedBox(width: 5.0),
               appProvider.user != null
