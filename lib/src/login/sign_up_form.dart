@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:cmm/src/providers/app_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:im_avatar/im_avatar.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
-import 'custom_text_form_field.dart';
-import '../avatar_picker/avatar.dart';
 import '../widgets/toast.dart';
+import 'custom_text_form_field.dart';
 
 class SignUpForm extends StatefulWidget {
   final bool enabled;
@@ -47,7 +47,7 @@ class _SignUpFormState extends State<SignUpForm> {
       child: Column(
         children: <Widget>[
           Avatar(
-            onCapture: (url, file) {
+            onSelection: (url, file) {
               imagefile = file;
             },
           ),

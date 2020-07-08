@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:cmm/src/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:im_avatar/im_avatar.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
 import '../widgets/app_dialog.dart';
 import '../login/login_dialog.dart';
-import '../avatar_picker/avatar.dart';
 import 'custom_button.dart';
 import '../login/custom_text_form_field.dart';
 import '../widgets/toast.dart';
-import 'rounded_outline_button.dart';
+import '../widgets/rounded_outline_button.dart';
 
 class EditProfileDialog extends StatefulWidget {
   @override
@@ -77,7 +77,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                             Avatar(
                               networkImage: appProvider.user?.imageUrl,
                               isSelectionEnabled: _isInEditMode,
-                              onCapture: (url, file) {
+                              onSelection: (url, file) {
                                 _imageFile = file;
                               },
                             ),

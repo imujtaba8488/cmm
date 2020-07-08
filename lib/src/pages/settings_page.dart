@@ -1,8 +1,8 @@
+import 'package:country_currency_chooser/country_currency_chooser.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
-import '../country_currency_chooser/currency_chooser_dialog.dart';
 import '../components/set_low_balance_threshold_dialog.dart';
 
 class SettingsPage extends StatefulWidget {

@@ -49,7 +49,6 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
         borderRadius: BorderRadius.circular(5.0),
       ),
       child: Container(
-        height: MediaQuery.of(context).size.height / 2.5,
         padding: EdgeInsets.all(5.0),
         decoration: BoxDecoration(
           border: Border.all(
@@ -58,19 +57,21 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
           ),
           borderRadius: BorderRadius.circular(5.0),
         ),
-        child: Column(
-          children: <Widget>[
-            isEditingEnabled
-                ? Container(
-                    margin: EdgeInsets.all(5.0),
-                    child: _helpText('Tap \'Save\' to save the Transaction.'),
-                  )
-                : Container(
-                    margin: EdgeInsets.all(5.0),
-                    child: _helpText('Tap \'Edit\' to edit the Transaction.'),
-                  ),
-            _form(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              isEditingEnabled
+                  ? Container(
+                      margin: EdgeInsets.all(5.0),
+                      child: _helpText('Tap \'Save\' to save the Transaction.'),
+                    )
+                  : Container(
+                      margin: EdgeInsets.all(5.0),
+                      child: _helpText('Tap \'Edit\' to edit the Transaction.'),
+                    ),
+              _form(),
+            ],
+          ),
         ),
       ),
     );

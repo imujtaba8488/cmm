@@ -1,3 +1,4 @@
+import 'package:country_currency_chooser/country_currency_chooser.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,7 +9,6 @@ import '../components/custom_button.dart';
 import '../components/dashboard.dart';
 import '../components/profile_view.dart';
 import '../components/transactions_list.dart';
-import '../country_currency_chooser/currency_chooser_dialog.dart';
 import '../login/login_dialog.dart';
 import '../providers/app_provider.dart';
 

@@ -32,8 +32,8 @@ class BottomNavBar extends StatelessWidget {
             ),
             _item(
               context,
-              icon: Icon(Icons.access_alarm),
-              label: 'Profile',
+              icon: Icon(Icons.multiline_chart),
+              label: 'Charts',
             ),
 
             // Do not display an item in the center below the FAB.
