@@ -11,6 +11,7 @@ import '../avatar_picker/avatar.dart';
 import 'custom_button.dart';
 import '../login/custom_text_form_field.dart';
 import '../widgets/toast.dart';
+import 'rounded_outline_button.dart';
 
 class EditProfileDialog extends StatefulWidget {
   @override
@@ -27,7 +28,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
       _newPasswordController,
       _confirmNewPasswordController;
   String _firstName, _lastName, _newPassword;
-  File imageFile;
+  File _imageFile;
 
   @override
   void initState() {
@@ -65,8 +66,11 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                               _isInEditMode ? Colors.grey[600] : Colors.white,
                         ),
                       ),
-                      Padding(
+                      Container(
                         padding: const EdgeInsets.all(5.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey[800]),
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -74,7 +78,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                               networkImage: appProvider.user?.imageUrl,
                               isSelectionEnabled: _isInEditMode,
                               onCapture: (url, file) {
-                                imageFile = file;
+                                _imageFile = file;
                               },
                             ),
                             SizedBox(width: 5.0),
@@ -165,16 +169,10 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                 ),
                 _isInEditMode
                     ? Container()
-                    : Divider(
-                        color: Colors.white,
-                        height: 1.0,
-                      ),
-                _isInEditMode
-                    ? Container()
                     : Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: InkWell(
-                          onTap: () {
+                        child: RoundedOutlineButton(
+                          onPressed: () {
                             appProvider.signOut();
                             Navigator.pop(context);
 
@@ -184,12 +182,8 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                               builder: (context) => LoginDialog(),
                             );
                           },
-                          child: Text(
-                            'Sign Out!',
-                            style: TextStyle(
-                              color: Colors.green,
-                            ),
-                          ),
+                          label: 'Sign Out!',
+                          borderColor: Colors.green,
                         ),
                       ),
               ],
@@ -200,6 +194,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     );
   }
 
+  /// Describes the steps that should be taken when the form is saved. Remember, onSaved() is only called when the user taps on the 'Save' button and the profile exists the [_isInEditMode] mode.
   void _onSaved() {
     AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
 
@@ -208,21 +203,23 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
 
       Navigator.pop(context);
 
-      User user = User(
-        firstName: _firstName,
-        lastName: _lastName,
-        password:
-            _newPassword.isEmpty ? appProvider.user.password : _newPassword,
-        email: appProvider.user.email,
-        currency: appProvider.user.currency,
-        imageUrl: appProvider.user.imageUrl,
-        id: appProvider.user.id,
-        lowBalanceThreshold: appProvider.user.lowBalanceThreshold,
-      );
+      if (_wasProfileUpdated) {
+        User user = User(
+          firstName: _firstName,
+          lastName: _lastName,
+          password:
+              _newPassword.isEmpty ? appProvider.user.password : _newPassword,
+          email: appProvider.user.email,
+          currency: appProvider.user.currency,
+          imageUrl: appProvider.user.imageUrl,
+          id: appProvider.user.id,
+          lowBalanceThreshold: appProvider.user.lowBalanceThreshold,
+        );
 
-      appProvider.updateUser(user, imageFile: imageFile);
+        appProvider.updateUser(user, imageFile: _imageFile);
 
-      showToast(context: context, message: 'Profile Updated!');
+        showToast(context: context, message: 'Profile Updated!');
+      }
     } else {
       // In case of an error do not exit the edit mode.
       setState(() {
@@ -268,10 +265,26 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     }
   }
 
+  /// Returns true or false based on whether the [value] matches the user password.
   bool _isPasswordCorrect(String value) {
     AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
 
     return appProvider.user.password.length == value.length &&
         appProvider.user.password.contains(value);
+  }
+
+  /// Returns true or false, based on whether the profile was updated or not. Profile is update happens in the following cases: avatar change, FirstName or LastName modifications, and password change.
+  bool get _wasProfileUpdated {
+    AppProvider appProvider = Provider.of<AppProvider>(context, listen: false);
+
+    if (_imageFile != null ||
+        _firstName != appProvider.user.firstName ||
+        _lastName != appProvider.user.lastName ||
+        (_newPasswordController.text.isNotEmpty &&
+            _confirmNewPasswordController.text.isNotEmpty)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
