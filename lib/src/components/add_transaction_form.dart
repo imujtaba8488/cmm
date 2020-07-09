@@ -119,7 +119,7 @@ class _AddTransactionFormState extends State<AddTransactionForm> {
                 ),
                 FittedBox(
                   child: DateSelector(
-                    showNextPreviousText: false,
+                    showNextPreviouslabels: false,
                     dateSelected: (DateTime value) {
                       _dateSelected = value;
                     },

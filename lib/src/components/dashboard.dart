@@ -59,23 +59,19 @@ class BalanceView extends StatelessWidget {
             children: <Widget>[
               Text(
                 'BALANCE',
-                style: TextStyle(
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: 18),
               ),
               FittedBox(
                 child: Row(
                   children: <Widget>[
                     Text(
                       '${appProvider.currency}',
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
+                      style: TextStyle(color: Colors.grey),
                     ),
                     Text(
                       ' ${appProvider.account.balance}',
                       style: TextStyle(
-                        fontSize: 25,
+                        fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -132,23 +128,19 @@ class TotalIncomeExpenseView extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         'Total Expenses',
-                        style: TextStyle(
-                          fontSize: 10,
-                        ),
+                        style: TextStyle(color: Colors.grey),
                       ),
                       Row(
                         children: <Widget>[
                           Text(
                             '${appProvider.currency}',
-                            style: TextStyle(
-                              fontSize: 10,
-                            ),
+                            style: TextStyle(color: Colors.grey),
                           ),
                           SizedBox(width: 5.0),
                           Text(
                             '${appProvider.account.totalExpense}',
                             style: TextStyle(
-                              fontSize: 14,
+                              // fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -165,23 +157,19 @@ class TotalIncomeExpenseView extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         'Total Income',
-                        style: TextStyle(
-                          fontSize: 10,
-                        ),
+                        style: TextStyle(color: Colors.grey),
                       ),
                       Row(
                         children: <Widget>[
                           Text(
                             '${appProvider.currency}',
-                            style: TextStyle(
-                              fontSize: 10,
-                            ),
+                            style: TextStyle(color: Colors.grey),
                           ),
                           SizedBox(width: 5.0),
                           Text(
                             '${appProvider.account.totalIncome}',
                             style: TextStyle(
-                              fontSize: 14,
+                              // fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

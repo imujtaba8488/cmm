@@ -161,19 +161,16 @@ class _TransactionDetailsDialogState extends State<TransactionDetailsDialog> {
             : Border.all(color: Colors.white, width: 0.1),
         borderRadius: BorderRadius.circular(5.0),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          DateSelector(
-            currentDate: widget.transaction.date,
-            isEnabled: isEditingEnabled,
-            dateSelected: (value) {
-              setState(() {
-                dateSelected = value;
-              });
-            },
-          ),
-        ],
+      child: DateSelector(
+        currentDate: widget.transaction.date,
+        isEnabled: isEditingEnabled,
+        dateSelected: (value) {
+          setState(() {
+            dateSelected = value;
+          });
+        },
+        showDayLabel: false,
+        // showNextPreviouslabels: false,
       ),
     );
   }

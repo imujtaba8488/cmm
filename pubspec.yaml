@@ -33,7 +33,7 @@ dependencies:
   firebase_storage: ^3.1.6
 
   country_currency_chooser: ^0.1.1
-  im_avatar: ^0.1.0
+  im_avatar: ^0.1.1
 
 
 dev_dependencies:

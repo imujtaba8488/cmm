@@ -75,8 +75,8 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Avatar(
-                              networkImage: appProvider.user?.imageUrl,
-                              isSelectionEnabled: _isInEditMode,
+                              networkPath: appProvider.user?.imageUrl,
+                              selectionDisabled: !_isInEditMode,
                               onSelection: (url, file) {
                                 _imageFile = file;
                               },
